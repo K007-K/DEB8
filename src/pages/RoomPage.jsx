@@ -174,14 +174,14 @@ function RoomPage() {
     }
 
     // Create new socket connection
-    const newSocket = io('https://mydeb8.netlify.app', {
+    const newSocket = io('*', {
       auth: { token },
       query: { roomId },
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
       timeout: 10000,
-      transports: ['polling'],
+      transports: ['websocket'],
       forceNew: true
     });
 
@@ -506,7 +506,7 @@ function RoomPage() {
         const token = localStorage.getItem('token');
         console.log('Creating new socket connection with token:', !!token);
         
-        const newSocket = io('https://mydeb8.netlify.app', {
+        const newSocket = io('*', {
           auth: { token },
           query: { roomId },
           reconnection: true,
