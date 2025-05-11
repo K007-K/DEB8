@@ -80,7 +80,7 @@ function ProfilePage() {
 
   const handleUpdateUsername = async () => {
     try {
-      await axios.put('http://localhost:3000/api/users/profile', 
+      await axios.put('https://mydeb8.netlify.app/api/users/profile', 
         { username: newUsername },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
       );
