@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base configuration
 const instance = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: 'https://deb8.onrender.com',
   headers: {
     'Content-Type': 'application/json'
   },
