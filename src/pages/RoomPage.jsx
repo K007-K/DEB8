@@ -174,7 +174,7 @@ function RoomPage() {
     }
 
     // Create new socket connection
-    const newSocket = io('*', {
+    const newSocket = io('https://deb8.onrender.com', {
       auth: { token },
       query: { roomId },
       reconnection: true,
@@ -506,7 +506,7 @@ function RoomPage() {
         const token = localStorage.getItem('token');
         console.log('Creating new socket connection with token:', !!token);
         
-        const newSocket = io('*', {
+        const newSocket = io('https://deb8.onrender.com', {
           auth: { token },
           query: { roomId },
           reconnection: true,
