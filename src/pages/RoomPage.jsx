@@ -10,6 +10,7 @@ import axiosNoAuth from '../api/axiosNoAuth';
 import FreeForAllRoom from './FreeForAllRoom';
 import TeamDebateRoom from './TeamDebateRoom';
 
+
 function RoomPage() {
   const { roomId } = useParams();
   const navigate = useNavigate();
@@ -512,7 +513,7 @@ function RoomPage() {
           reconnectionAttempts: 5,
           reconnectionDelay: 1000,
           timeout: 10000,
-          transports: ['polling'],
+          transports: ['websocket'],
           forceNew: true
         });
 
