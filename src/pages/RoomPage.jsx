@@ -173,7 +173,7 @@ function RoomPage() {
     }
 
     // Create new socket connection
-    const newSocket = io('http://localhost:3000', {
+    const newSocket = io('https://mydeb8.netlify.app', {
       auth: { token },
       query: { roomId },
       reconnection: true,
@@ -505,7 +505,7 @@ function RoomPage() {
         const token = localStorage.getItem('token');
         console.log('Creating new socket connection with token:', !!token);
         
-        const newSocket = io('http://localhost:3000', {
+        const newSocket = io('https://mydeb8.netlify.app', {
           auth: { token },
           query: { roomId },
           reconnection: true,
