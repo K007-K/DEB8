@@ -27,7 +27,7 @@ function ProfilePage() {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/users/profile', {
+      const response = await axios.get('https://mydeb8.netlify.app/api/users/profile', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
@@ -44,7 +44,7 @@ function ProfilePage() {
   const fetchDebateCount = async () => {
     try {
       console.log('Fetching debate count for user:', user.id);
-      const response = await axios.get('http://localhost:3000/api/rooms/my-rooms', {
+      const response = await axios.get('https://mydeb8.netlify.app/api/rooms/my-rooms', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
