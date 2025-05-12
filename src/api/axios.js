@@ -5,7 +5,6 @@ const instance = axios.create({
   baseURL: 'https://deb8.onrender.com',
   headers: {
    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*'
   },
   // Remove withCredentials as we'll use token-based auth
   withCredentials: false
@@ -17,10 +16,6 @@ instance.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-    }
-     // Ensure the request goes to the backend URL
-    if (!config.url.startsWith('http')) {
-      config.url = `https://deb8.onrender.com${config.url}`;
     }
     console.log('Making request to:', config.url, 'with data:', config.data);
     return config;
