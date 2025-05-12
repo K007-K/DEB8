@@ -16,7 +16,7 @@ const io = new Server(httpServer, {
   cors: {
     origin: "https://mydeb8.netlify.app",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+     allowedHeaders: ["Content-Type", "Authorization", "Access-Control-Allow-Origin"],
     credentials: true
   }
 });
@@ -25,7 +25,7 @@ const io = new Server(httpServer, {
 app.use(cors({
   origin: "https://mydeb8.netlify.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+ allowedHeaders: ["Content-Type", "Authorization", "Access-Control-Allow-Origin"],
   credentials: true
 }));
 
