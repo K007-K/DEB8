@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base configuration
 const instance = axios.create({
-  baseURL: 'https://deb8.onrender.com',
+  baseURL: 'https://mydeb8.netlify.app',
   headers: {
     'Content-Type': 'application/json'
   },
