@@ -27,7 +27,7 @@ function ProfilePage() {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get('https://mydeb8.netlify.app/api/users/profile', {
+      const response = await axios.get('https://deb8.onrender.com/api/users/profile', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
@@ -44,7 +44,7 @@ function ProfilePage() {
   const fetchDebateCount = async () => {
     try {
       console.log('Fetching debate count for user:', user.id);
-      const response = await axios.get('https://mydeb8.netlify.app/api/rooms/my-rooms', {
+      const response = await axios.get('https://deb8.onrender.com/api/rooms/my-rooms', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
@@ -80,7 +80,7 @@ function ProfilePage() {
 
   const handleUpdateUsername = async () => {
     try {
-      await axios.put('https://mydeb8.netlify.app/api/users/profile', 
+      await axios.put('https://deb8.onrender.com/api/users/profile', 
         { username: newUsername },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
       );
