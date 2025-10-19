@@ -1,136 +1,24 @@
-# Dependencies
-node_modules/
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
 
-# Build outputs
-dist/
-dist-ssr/
-build/
-.next/
-out/
-*.tsbuildinfo
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env*.local
-
-# Logs
-logs/
-*.log
-
-# Testing
-coverage/
-.nyc_output/
-*.lcov
-
-# Cache directories
-.cache/
-.parcel-cache/
-.eslintcache
-.stylelintcache
-.npm/
-.yarn/
-.pnp.*
-
-# OS files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-Desktop.ini
+node_modules
+dist
+dist-ssr
+*.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-.idea/
-*.swp
-*.swo
-*.swn
-*~
+.idea
+.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
-# Temporary files
-*.tmp
-*.temp
-tmp/
-temp/
-
-# Database
-*.sqlite
-*.sqlite3
-*.db
-
-# MongoDB
-data/
-mongodb/
-
-# Miscellaneous
-*.pid
-*.seed
-*.pid.lock
-.grunt/
-lib-cov/
-.lock-wscript
-typings/
-.npm
-.node_repl_history
-*.tgz
-.yarn-integrity
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# dotenv environment variable files
-.env.backup
-
-# Serverless directories
-.serverless/
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
-
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
-
-# Webpack
-.webpack/
-
-# Vite
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*

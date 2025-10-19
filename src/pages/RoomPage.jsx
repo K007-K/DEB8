@@ -752,7 +752,7 @@ function RoomPage() {
   // Validate password before showing join options
   const handlePasswordCheck = async () => {
     try {
-      const response = await axiosNoAuth.post(`/api/rooms/${roomId}/join`, {
+      const response = await api.post(`/api/rooms/${roomId}/join`, {
         password: joinPassword,
         role: 'check',
       }, {

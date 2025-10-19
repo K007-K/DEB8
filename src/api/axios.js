@@ -4,7 +4,7 @@ import axios from 'axios';
 const instance = axios.create({
   baseURL: 'https://deb8.onrender.com',
   headers: {
-    'Content-Type': 'application/json'
+   'Content-Type': 'application/json',
   },
   // Remove withCredentials as we'll use token-based auth
   withCredentials: false
