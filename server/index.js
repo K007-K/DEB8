@@ -38,6 +38,21 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check route
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'ok',
+    message: 'DEB8 API Server is running',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      rooms: '/api/rooms',
+      polls: '/api/polls',
+      users: '/api/users'
+    }
+  });
+});
+
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
