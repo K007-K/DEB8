@@ -1,7 +1,28 @@
 {
-  "name": "debate-platform",
+  "name": "deb8-platform",
+  "version": "1.0.0",
+  "description": "Real-time debate & polling platform with 2v2 team debates, free-for-all rooms, and live polls",
+  "author": "DEB8 Team",
+  "license": "MIT",
+  "homepage": "https://mydeb8.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/K007-K/DEB8.git"
+  },
+  "bugs": {
+    "url": "https://github.com/K007-K/DEB8/issues"
+  },
+  "keywords": [
+    "debate",
+    "polling",
+    "real-time",
+    "websocket",
+    "react",
+    "express",
+    "mongodb",
+    "socket.io"
+  ],
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
