@@ -436,7 +436,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact & Support
 
-- 📧 Email: support@deb8platform.com
+- 📧 Email: karthikuramdasu@gmail.com
 - 🐛 Issues: [GitHub Issues](https://github.com/K007-K/DEB8/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/K007-K/DEB8/discussions)
 - 🌐 Website: [https://mydeb8.netlify.app](https://mydeb8.netlify.app)
