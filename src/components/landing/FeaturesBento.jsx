@@ -139,17 +139,17 @@ export default function FeaturesBento() {
             </div>
           </div>
 
-          {/* Feature 5: Dedicated Team Channels (Wide) */}
-          <div ref={addToRefs} className="md:col-span-2 md:row-span-1 bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-xl border border-white/[0.08] rounded-3xl p-6 flex items-center justify-between group relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-primary/30 transition-colors duration-500">
-            <div className="relative z-10 max-w-[60%]">
-               <h3 className="text-2xl font-bold text-white tracking-tight mb-3">Dedicated Team Channels</h3>
-               <p className="text-sm text-white/60 font-light leading-relaxed">Strategy happens behind the scenes. Use private team chats to coordinate rebuttals and arguments with your partner during a live 2v2 debate.</p>
+          {/* Feature 5: Dedicated Team Channels (Full Width) */}
+          <div ref={addToRefs} className="md:col-span-4 md:row-span-1 bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-xl border border-white/[0.08] rounded-3xl p-8 md:px-16 flex items-center justify-between group relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-primary/30 transition-colors duration-500">
+            <div className="relative z-10 max-w-2xl">
+               <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight mb-3">Dedicated Team Channels</h3>
+               <p className="text-base text-white/60 font-light leading-relaxed">Strategy happens behind the scenes. Use private team chats to coordinate rebuttals and arguments with your partner during a live 2v2 debate.</p>
             </div>
             
             {/* Visual element */}
-            <div className="w-24 h-24 rounded-full border border-white/10 bg-black/50 flex items-center justify-center relative group-hover:border-primary/30 transition-colors duration-500 shadow-inner">
-               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FB790B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-               <div className="absolute top-5 right-5 w-3 h-3 bg-red-500 rounded-full border-2 border-black" />
+            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border border-white/10 bg-black/50 flex items-center justify-center relative group-hover:border-primary/30 transition-colors duration-500 shadow-inner flex-shrink-0">
+               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FB790B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+               <div className="absolute top-6 right-6 md:top-8 md:right-8 w-4 h-4 bg-red-500 rounded-full border-[3px] border-black" />
             </div>
           </div>
 
