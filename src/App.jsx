@@ -14,12 +14,13 @@ import MyRoomsPage from './pages/MyRoomsPage';
 import CreatePoll from './pages/CreatePoll';
 import { Toaster } from 'react-hot-toast';
 
+import DashboardNav from './components/layout/DashboardNav';
+
 function LoadingSpinner() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#020202] flex items-center justify-center transition-colors duration-500">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
       </div>
     </div>
   );
@@ -36,7 +37,14 @@ function PrivateRoute({ children }) {
     return <Navigate to="/auth?mode=login" replace />;
   }
 
-  return children;
+  return (
+    <>
+      <DashboardNav />
+      <div className="pt-16 min-h-screen bg-slate-50 dark:bg-[#020202] transition-colors duration-500">
+        {children}
+      </div>
+    </>
+  );
 }
 
 function App() {

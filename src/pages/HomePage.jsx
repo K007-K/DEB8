@@ -1,24 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MessageSquare, Plus, Users, LogOut, TrendingUp, BarChart2, Clock, Lock, Grid, User } from 'lucide-react';
+import { MessageSquare, Plus, Users, TrendingUp, BarChart2, Clock, Lock, ArrowRight, Play } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
-import axios from 'axios';
 import TrendingPolls from '../components/TrendingPolls';
-import { categories } from './categories';
-import HomePageHeader from '../components/HomePageHeader';
-import DebateIllustration from './assets/debate-illustration.svg';
 
-function HomePage() {
+export default function HomePage() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [debates, setDebates] = useState([]);
   const [polls, setPolls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [roomId, setRoomId] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -58,25 +53,20 @@ function HomePage() {
     }
   };
 
-  const handleJoinRoom = async (roomId) => {
+  const handleJoinRoom = async (e) => {
+    e?.preventDefault();
+    if (!roomId) return;
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         toast.error('Please log in to join a room');
         return;
       }
-
       navigate(`/room/${roomId}`);
     } catch (error) {
       console.error('Error joining room:', error);
       toast.error('Failed to join room. Please try again.');
-      navigate('/');
     }
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
   };
 
   const formatTimeAgo = (timestamp) => {
@@ -90,62 +80,51 @@ function HomePage() {
   const DebateCard = ({ debate }) => {
     const is2v2 = debate.debateType === '2vs2';
     return (
-      <div
-        className="bg-white rounded-2xl shadow-xl p-6 font-poppins transition-all duration-300 ease-in-out hover:scale-[1.01]"
-      >
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <span className={`px-2 py-1 rounded text-xs font-medium ${
-                debate.status === 'LIVE' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'
-              }`}>
-                {debate.status}
-              </span>
-              <span className="text-sm text-[#4B587C]">
-                Started {formatTimeAgo(debate.startTime || debate.createdAt)}
-              </span>
-              <span className="inline-block mb-2 px-2 py-1 rounded text-xs bg-indigo-50 text-indigo-700 font-semibold">{debate.category || 'Uncategorized'}</span>
-              {debate.isPrivate && (
-                <span className="flex items-center gap-1 ml-2">
-                  <Lock className="w-4 h-4 text-red-500" title="Private Room" />
-                  <span className="px-2 py-0.5 rounded bg-red-100 text-red-600 text-xs font-bold">Private Room</span>
-                </span>
-              )}
-            </div>
-            <h3 className="text-lg font-semibold mb-2 flex items-center text-[#233D7B]">
-              {debate.topic}
-            </h3>
-            <p className="text-sm text-[#4B587C] mb-2 line-clamp-2">{debate.description}</p>
-            <div className="text-xs text-[#4B587C] mb-2">Room ID: {debate.roomId}</div>
-          </div>
-        </div>
-
-        <div className="space-y-3 mb-4">
-          <div className="flex items-center text-[#4B587C] text-sm">
-            <Users className="w-4 h-4 mr-2" />
-            <span>
-              {is2v2
-                ? `Team1: ${(debate.team1?.members?.length || 0)} | Team2: ${(debate.team2?.members?.length || 0)}`
-                : ''}
+      <div className="bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-6 font-sans transition-all duration-500 ease-out hover:scale-[1.02] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-primary/50 group relative overflow-hidden flex flex-col justify-between">
+        <div className="absolute inset-0 bg-gradient-to-tr from-primary/0 via-primary/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative z-10 flex-1">
+          <div className="flex items-center gap-2 mb-3">
+            <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wider ${
+              debate.status === 'LIVE' ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' : 'bg-slate-100 text-slate-700 dark:bg-white/10 dark:text-white/70'
+            }`}>
+              {debate.status}
             </span>
+            <span className="text-xs text-slate-500 dark:text-white/50 font-medium">
+              {formatTimeAgo(debate.startTime || debate.createdAt)}
+            </span>
+            <span className="px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary">{debate.category || 'Uncategorized'}</span>
+            {debate.isPrivate && (
+              <span className="flex items-center gap-1 ml-auto">
+                <Lock className="w-3 h-3 text-red-500" />
+              </span>
+            )}
           </div>
-          <div className="flex items-center text-[#4B587C] text-sm">
-            <MessageSquare className="w-4 h-4 mr-2" />
-            <span>{debate.messages?.length || 0} Messages</span>
-          </div>
-          <div className="flex items-center text-[#4B587C] text-sm">
-            <Clock className="w-4 h-4 mr-2" />
-            <span>{debate.debateType || 'Standard'}</span>
+          <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white leading-snug group-hover:text-primary transition-colors duration-300 line-clamp-2">
+            {debate.topic}
+          </h3>
+          <p className="text-sm text-slate-600 dark:text-white/60 mb-4 line-clamp-2">{debate.description}</p>
+        </div>
+
+        <div className="relative z-10 space-y-3 mb-6 mt-4 p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5">
+          <div className="flex items-center justify-between text-slate-600 dark:text-white/70 text-sm font-medium">
+            <div className="flex items-center">
+              <Users className="w-4 h-4 mr-2 text-primary" />
+              {is2v2 ? `2v2 Teams` : 'Free For All'}
+            </div>
+            <div className="flex items-center">
+              <MessageSquare className="w-4 h-4 mr-2 text-primary" />
+              {debate.messages?.length || 0} msgs
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
+        <div className="relative z-10 flex justify-between items-center mt-auto">
           <div className="flex items-center space-x-2">
             <div className="flex -space-x-2">
               {debate.participants && debate.participants.length > 0 && debate.participants.slice(0, 3).map((participant, index) => (
                 <div
                   key={index}
-                  className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xs font-medium"
+                  className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-white dark:border-[#0f0f0f] flex items-center justify-center text-xs font-bold text-slate-700 dark:text-white"
                   title={participant.username}
                 >
                   {participant.username[0].toUpperCase()}
@@ -153,54 +132,58 @@ function HomePage() {
               ))}
             </div>
             {debate.participants && debate.participants.length > 3 && (
-              <span className="text-[#4B587C] text-sm">
-                +{debate.participants.length - 3} more
+              <span className="text-slate-500 dark:text-white/50 text-xs font-bold">
+                +{debate.participants.length - 3}
               </span>
             )}
           </div>
-          <div className="flex flex-col items-end">
-            <button
-              onClick={() => navigate(`/room/${debate.roomId}`)}
-              className="px-4 py-2 bg-[#FB790B] text-white rounded-lg hover:bg-[#e06d00] transition-colors font-poppins"
-            >
-              Join Now
-            </button>
-          </div>
+          <button
+            onClick={() => navigate(`/room/${debate.roomId}`)}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 dark:bg-white text-white dark:text-black hover:scale-110 hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white transition-all duration-300 shadow-md"
+          >
+            <ArrowRight className="w-5 h-5" />
+          </button>
         </div>
       </div>
     );
   };
 
   const PollCard = ({ poll }) => (
-    <div
-      className="bg-white rounded-2xl shadow-xl p-6 font-poppins transition-all duration-300 ease-in-out hover:scale-[1.03]"
-    >
-      <h3 className="text-lg font-semibold mb-4 text-[#233D7B]">
-        {poll.topic}
-      </h3>
-      <div className="space-y-3">
-        {poll.options?.map((option, index) => (
-          <div key={index}>
-            <div className="flex justify-between text-sm mb-1">
-              <span>{option.text}</span>
-              <span>{option.votes} votes</span>
-            </div>
-            <div className="h-2 bg-[#E3F0FF] rounded-full overflow-hidden">
-              <div
-                className="h-full bg-[#22C55E] rounded-full transition-all duration-500"
-                style={{ width: `${(option.votes / poll.totalVotes) * 100}%` }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-        <div className="flex items-center text-sm text-[#4B587C]">
-          <Users className="w-4 h-4 mr-1" />
-          {poll.totalVotes} votes
+    <div className="bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-6 font-sans transition-all duration-500 ease-out hover:scale-[1.02] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-blue-500/50 group relative overflow-hidden flex flex-col">
+      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/0 via-blue-500/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="relative z-10 flex-1">
+        <h3 className="text-xl font-bold mb-6 text-slate-900 dark:text-white leading-snug group-hover:text-blue-500 transition-colors duration-300 line-clamp-2">
+          {poll.topic}
+        </h3>
+        <div className="space-y-4">
+          {poll.options?.map((option, index) => {
+            const percentage = poll.totalVotes > 0 ? (option.votes / poll.totalVotes) * 100 : 0;
+            return (
+              <div key={index} className="relative">
+                <div className="flex justify-between text-sm mb-1.5 font-bold">
+                  <span className="text-slate-700 dark:text-white/80">{option.text}</span>
+                  <span className="text-slate-500 dark:text-white/50">{option.votes} ({percentage.toFixed(0)}%)</span>
+                </div>
+                <div className="h-2.5 bg-slate-100 dark:bg-white/10 rounded-full overflow-hidden shadow-inner">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${percentage}%` }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
-        <div className="flex items-center text-sm text-[#FB790B]">
-          <Clock className="w-4 h-4 mr-1" />
+      </div>
+      <div className="relative z-10 flex items-center justify-between mt-6 pt-4 border-t border-slate-200/60 dark:border-white/10">
+        <div className="flex items-center text-sm font-bold text-slate-500 dark:text-white/50">
+          <Users className="w-4 h-4 mr-1.5" />
+          {poll.totalVotes || 0} votes
+        </div>
+        <div className="flex items-center text-sm font-bold text-blue-500">
+          <Clock className="w-4 h-4 mr-1.5" />
           {formatTimeAgo(poll.createdAt)}
         </div>
       </div>
@@ -208,206 +191,165 @@ function HomePage() {
   );
 
   return (
-    <div className="min-h-screen font-poppins relative overflow-x-hidden" style={{ backgroundImage: 'url("/src/pages/assets/bg.jpg")', backgroundRepeat: 'repeat', backgroundSize: 'auto' }}>
-      {/* Floating circles for background, matching landing page */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute left-1/3 top-1/4 w-64 h-64 bg-[#fff]/[0.08] rounded-full blur-2xl" />
-        <div className="absolute right-1/4 top-1/3 w-80 h-80 bg-[#fff]/[0.10] rounded-full blur-2xl" />
-        {/* Subtle radial overlay for depth */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-[#ffffff0a] via-transparent to-transparent pointer-events-none" />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 relative z-10 font-sans">
+      
+      {/* Welcome Banner */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="relative overflow-hidden bg-white/70 dark:bg-black/40 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] mb-12"
+      >
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+        
+        <div className="relative z-10 max-w-2xl">
+          <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
+            Welcome to the Arena, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#FF9900]">{user?.username}</span>
+          </h1>
+          <p className="text-lg text-slate-600 dark:text-white/60 font-medium mb-8">
+            Create a live room, join an ongoing debate, or cast your vote in trending polls.
+          </p>
+          
+          <form onSubmit={handleJoinRoom} className="flex flex-col sm:flex-row gap-3 max-w-md">
+            <input
+              type="text"
+              value={roomId}
+              onChange={(e) => setRoomId(e.target.value.toLowerCase())}
+              placeholder="Enter Room ID"
+              className="flex-1 px-5 py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all shadow-inner font-medium"
+            />
+            <button
+              type="submit"
+              className="px-8 py-4 bg-slate-900 dark:bg-white text-white dark:text-black font-bold rounded-xl hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white transition-all shadow-[0_8px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_8px_30px_rgba(251,121,11,0.4)] dark:hover:shadow-[0_0_30px_rgba(251,121,11,0.5)] transform hover:-translate-y-1 flex justify-center items-center gap-2"
+            >
+              <Play className="w-5 h-5 fill-current" />
+              Join
+            </button>
+          </form>
+        </div>
+      </motion.div>
+
+      {/* Bento Action Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+        <motion.div 
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+          onClick={() => navigate('/create?type=debate')}
+          className="cursor-pointer group relative overflow-hidden bg-gradient-to-br from-[#FB790B] to-[#FF4500] rounded-3xl p-8 sm:p-10 shadow-[0_20px_40px_rgba(251,121,11,0.3)] dark:shadow-[0_20px_40px_rgba(251,121,11,0.2)]"
+        >
+          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay pointer-events-none" />
+          <div className="relative z-10 h-full flex flex-col justify-between">
+            <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-16 shadow-inner border border-white/30">
+              <MessageSquare className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Create Debate</h2>
+              <p className="text-white/80 font-medium">Start a 2v2 or Free-For-All room and invite opponents instantly.</p>
+            </div>
+          </div>
+          <div className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-white text-primary flex items-center justify-center transform translate-x-8 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 shadow-xl">
+            <ArrowRight className="w-6 h-6" />
+          </div>
+        </motion.div>
+
+        <motion.div 
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+          onClick={() => navigate('/create?type=poll')}
+          className="cursor-pointer group relative overflow-hidden bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-blue-900/20 dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-blue-500/50 transition-colors"
+        >
+          <div className="absolute right-0 top-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none transform translate-x-1/2 -translate-y-1/2" />
+          <div className="relative z-10 h-full flex flex-col justify-between">
+            <div className="w-14 h-14 bg-blue-100 dark:bg-blue-500/20 rounded-2xl flex items-center justify-center mb-16 shadow-inner border border-blue-200 dark:border-blue-500/30">
+              <BarChart2 className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2 tracking-tight transition-colors group-hover:text-blue-500">Create Poll</h2>
+              <p className="text-slate-600 dark:text-white/60 font-medium">Gather public sentiment with real-time, animated voting modules.</p>
+            </div>
+          </div>
+          <div className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center transform translate-x-8 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 shadow-xl">
+            <ArrowRight className="w-6 h-6" />
+          </div>
+        </motion.div>
       </div>
-      {/* Deb8 Logo and Navigation */}
-      <header className="relative z-10 flex items-center justify-between px-8 pt-8 pb-4 bg-gradient-to-br from-[#1a223d] via-[#233D7B] to-[#2e3a5a] rounded-b-3xl md:rounded-b-[3rem] shadow-2xl">
-        <div className="flex items-center text-3xl font-bold font-grotesk">
-          <span className="text-[#233D7B] bg-white px-2 py-1 rounded-lg">Deb</span><span className="text-[#FB790B]">8</span>
-        </div>
-        <div className="flex items-center gap-6 ml-auto">
-          <nav className="flex items-center gap-12 font-poppins text-lg font-bold">
-            <span onClick={() => navigate('/create?type=debate')} className="cursor-pointer text-white hover:text-[#FB790B] transition flex items-center gap-2">
-              <Plus className="w-6 h-6 text-white" /> Create Room
-            </span>
-            <span onClick={() => navigate('/my-rooms')} className="cursor-pointer text-white hover:text-[#FB790B] transition flex items-center gap-2">
-              <Users className="w-6 h-6 text-white" /> My Rooms
-            </span>
-          </nav>
-          {user && (
-            <div className="flex items-center gap-2 ml-4">
-              <span onClick={() => navigate('/profile')} className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white text-2xl font-bold shadow-md border-2 border-[#FB790B] cursor-pointer">
-                {user.username[0]?.toUpperCase()}
-              </span>
-              <span onClick={() => navigate('/profile')} className="text-[#FB790B] text-xl font-bold cursor-pointer hover:underline">
-                {user.username}
-              </span>
-              <span onClick={handleLogout} className="cursor-pointer text-[#FB790B] hover:text-white transition flex items-center ml-2">
-                <LogOut className="w-7 h-7 text-[#FB790B]" />
-              </span>
+
+      {/* Trending Debates Section */}
+      <section className="mb-16">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-primary" />
             </div>
-          )}
-        </div>
-      </header>
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Curved Gradient Section: Welcome + Browse Cards */}
-        <div className="bg-gradient-to-br from-[#1a223d] via-[#233D7B] to-[#2e3a5a] rounded-3xl shadow-2xl pb-12 mb-12 w-full px-0 pt-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <section className="mt-12">
-              <div className="bg-white/10 p-8 text-white shadow-2xl border border-white/10 rounded-2xl">
-                <h1 className="text-3xl font-bold mb-4 font-grotesk text-white drop-shadow-lg">Welcome back, {user?.username}!</h1>
-                <p className="text-white/90 font-medium mb-8 drop-shadow">Ready to engage in meaningful discussions?</p>
-                <div className="flex gap-4 flex-wrap">
-                  <div className="flex gap-4">
-                    <button
-                      onClick={() => navigate('/create?type=debate')}
-                      className="px-6 py-3 bg-[#FB790B] text-white rounded-lg font-semibold hover:bg-[#e06d00] transition-colors flex items-center font-poppins"
-                    >
-                      <MessageSquare className="w-5 h-5 mr-2" />
-                      Create Debate
-                    </button>
-                    <button
-                      onClick={() => navigate('/create?type=poll')}
-                      className="px-6 py-3 bg-white text-[#233D7B] rounded-lg font-semibold hover:bg-[#f7fafd] border border-[#233D7B] transition-colors flex items-center font-poppins"
-                    >
-                      <BarChart2 className="w-5 h-5 mr-2" />
-                      Create Poll
-                    </button>
-                  </div>
-                  <div className="flex-1 max-w-md">
-                    <form onSubmit={() => handleJoinRoom(roomId)} className="flex gap-2">
-                      <input
-                        type="text"
-                        value={roomId}
-                        onChange={(e) => setRoomId(e.target.value.toLowerCase())}
-                        placeholder="Enter room ID"
-                        className="flex-1 px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 font-poppins"
-                      />
-                      <button
-                        type="submit"
-                        className="px-6 py-3 bg-[#FB790B] text-white rounded-lg font-semibold hover:bg-[#e06d00] transition-colors font-poppins"
-                      >
-                        Join Room
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section className="mb-0 mt-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Browse Debates Card */}
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  onClick={() => navigate('/debates')}
-                  className="bg-white/10 shadow-2xl p-8 cursor-pointer font-poppins rounded-2xl flex flex-col justify-between"
-                  transition={{ duration: 0.5, ease: 'easeInOut' }}
-                >
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-white drop-shadow">Browse Debates</h2>
-                    <div className="flex items-center justify-center w-10 h-10 bg-[#F3F6FA] rounded-full">
-                      <MessageSquare className="w-6 h-6 text-[#233D7B]" />
-                    </div>
-                  </div>
-                  <p className="text-white/90 mb-6 font-medium">
-                    Explore and join live debates on various topics. Engage in meaningful discussions with other users.
-                  </p>
-                  <div className="flex items-center text-[#FB790B] font-medium">
-                    View all debates
-                    <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </motion.div>
-                {/* Browse Polls Card */}
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  onClick={() => navigate('/polls')}
-                  className="bg-white/10 shadow-2xl p-8 cursor-pointer font-poppins rounded-2xl flex flex-col justify-between"
-                  transition={{ duration: 0.5, ease: 'easeInOut' }}
-                >
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-white drop-shadow">Browse Polls</h2>
-                    <div className="flex items-center justify-center w-10 h-10 bg-[#F3F6FA] rounded-full">
-                      <BarChart2 className="w-6 h-6 text-[#233D7B]" />
-                    </div>
-                  </div>
-                  <p className="text-white/90 mb-6 font-medium">
-                    Discover and participate in polls. Share your opinion and see what others think about various topics.
-                  </p>
-                  <div className="flex items-center text-[#FB790B] font-medium">
-                    View all polls
-                    <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </motion.div>
-              </div>
-            </section>
+            <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Live Arenas</h2>
           </div>
+          <button
+            onClick={() => navigate('/debates')}
+            className="text-primary font-bold hover:text-[#e06d00] flex items-center gap-1 group"
+          >
+            View All
+            <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+          </button>
         </div>
 
-        {/* Trending Debates Section */}
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-black drop-shadow-lg">Trending Debates</h2>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center text-[#FB790B]">
-                <TrendingUp className="w-5 h-5 mr-2" />
-                <span className="font-medium">Most Active</span>
-              </div>
-              <button
-                onClick={() => navigate('/debates')}
-                className="text-[#FB790B] hover:text-[#e06d00] font-medium flex items-center"
-              >
-                View All
-                <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
-          {loading ? (
-            <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FB790B]"></div>
-            </div>
-          ) : debates.length === 0 ? (
-            <div className="text-center py-12 bg-white/80 rounded-lg">
-              <p className="text-[#233D7B]">No trending debates at the moment</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {debates
-                .sort((a, b) => b.participants.length - a.participants.length)
-                .slice(0, 3)
-                .map(room => (
-                  <DebateCard key={room.roomId} debate={room} />
-                ))}
-            </div>
-          )}
-        </section>
+        ) : debates.length === 0 ? (
+          <div className="text-center py-20 bg-white/50 dark:bg-black/20 rounded-3xl border border-dashed border-slate-300 dark:border-white/10">
+            <p className="text-slate-500 dark:text-white/50 font-bold">No trending debates at the moment</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {debates
+              .sort((a, b) => b.participants.length - a.participants.length)
+              .slice(0, 3)
+              .map(room => (
+                <DebateCard key={room.roomId} debate={room} />
+              ))}
+          </div>
+        )}
+      </section>
 
-        {/* Trending Polls Section */}
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-black drop-shadow-lg">Trending Polls</h2>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center text-[#FB790B]">
-                <BarChart2 className="w-5 h-5 mr-2" />
-                <span className="font-medium">Most Voted</span>
-              </div>
-              <button
-                onClick={() => navigate('/polls')}
-                className="text-[#FB790B] hover:text-[#e06d00] font-medium flex items-center"
-              >
-                View All
-                <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
+      {/* Trending Polls Section */}
+      <section className="mb-16">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
+              <BarChart2 className="w-5 h-5 text-blue-500" />
             </div>
+            <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Top Polls</h2>
           </div>
-          <TrendingPolls />
-        </section>
-      </main>
+          <button
+            onClick={() => navigate('/polls')}
+            className="text-blue-500 font-bold hover:text-blue-600 flex items-center gap-1 group"
+          >
+            View All
+            <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : polls.length === 0 ? (
+          <div className="text-center py-20 bg-white/50 dark:bg-black/20 rounded-3xl border border-dashed border-slate-300 dark:border-white/10">
+            <p className="text-slate-500 dark:text-white/50 font-bold">No active polls at the moment</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {polls
+              .sort((a, b) => b.totalVotes - a.totalVotes)
+              .slice(0, 3)
+              .map(poll => (
+                <PollCard key={poll._id || poll.roomId} poll={poll} />
+              ))}
+          </div>
+        )}
+      </section>
+
     </div>
   );
 }
-
-export default HomePage;
