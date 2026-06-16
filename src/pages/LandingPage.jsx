@@ -10,7 +10,7 @@ import CustomCursor from '../components/layout/CustomCursor';
 function LandingPage() {
   return (
     <SmoothScroller>
-      <div className="min-h-screen bg-[#020202] text-white selection:bg-primary/30 selection:text-white">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#020202] text-slate-900 dark:text-white selection:bg-primary/30 selection:text-white transition-colors duration-500">
         <CustomCursor />
         <FloatingNav />
         <main>

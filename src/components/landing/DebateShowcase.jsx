@@ -99,13 +99,13 @@ export default function DebateShowcase() {
   ];
 
   return (
-    <section ref={containerRef} className="relative w-full py-40 bg-[#020202]">
+    <section ref={containerRef} className="relative w-full py-40 bg-slate-50 dark:bg-[#020202] transition-colors duration-500">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-32">
-          <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-4 uppercase">
-            The Flow of <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFCC00] to-primary">Combat</span>
+          <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter mb-4 uppercase transition-colors">
+            The Flow of <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#FF9900] dark:from-[#FFCC00] dark:to-primary">Combat</span>
           </h2>
-          <p className="text-xl text-white/50 font-light max-w-2xl mx-auto">
+          <p className="text-xl text-slate-600 dark:text-white/50 font-light max-w-2xl mx-auto transition-colors">
             Experience highly structured 2v2 debates with strict timers, ensuring intellectual rigor over shouting matches.
           </p>
         </div>
@@ -113,13 +113,13 @@ export default function DebateShowcase() {
         {/* Timeline Container */}
         <div className="relative w-full max-w-4xl mx-auto">
           {/* Central Line */}
-          <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-white/10 hidden md:block" />
+          <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-slate-200 dark:bg-white/10 hidden md:block transition-colors" />
           
           {/* Animated Highlight Line */}
           <div ref={lineRef} className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-transparent hidden md:block rounded-full shadow-[0_0_15px_rgba(251,121,11,0.5)]" />
           
           {/* Glowing Dot */}
-          <div ref={dotRef} className="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-primary shadow-[0_0_20px_rgba(251,121,11,1)] hidden md:block -mt-2 z-20 border-2 border-[#020202]" />
+          <div ref={dotRef} className="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-primary shadow-[0_0_20px_rgba(251,121,11,1)] hidden md:block -mt-2 z-20 border-2 border-slate-50 dark:border-[#020202] transition-colors" />
 
           {/* Timeline Steps */}
           <div className="space-y-24 md:space-y-32">
@@ -132,34 +132,34 @@ export default function DebateShowcase() {
                   
                   {/* Content Card */}
                   <div ref={addToRefs} className="w-full md:w-5/12">
-                    <div className="bg-black/40 backdrop-blur-xl border border-white/[0.08] rounded-3xl p-8 shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-white/20 transition-colors duration-500 group relative overflow-hidden">
+                    <div className="bg-white/70 dark:bg-black/40 backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-slate-300 dark:hover:border-white/20 transition-colors duration-500 group relative overflow-hidden">
                       {/* Subtle Background Glow on Hover */}
                       <div className="absolute inset-0 bg-gradient-to-tr from-primary/0 via-primary/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       
                       <div className="relative z-10">
                         <div className="flex items-center gap-4 mb-6">
-                          <div className={`w-12 h-12 rounded-full flex items-center justify-center border shadow-inner ${isLeft ? 'bg-blue-500/10 border-blue-500/30 shadow-[inset_0_0_15px_rgba(59,130,246,0.2)]' : 'bg-red-500/10 border-red-500/30 shadow-[inset_0_0_15px_rgba(239,68,68,0.2)]'}`}>
+                          <div className={`w-12 h-12 rounded-full flex items-center justify-center border shadow-sm dark:shadow-inner ${isLeft ? 'bg-blue-50/50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/30 dark:shadow-[inset_0_0_15px_rgba(59,130,246,0.2)]' : 'bg-red-50/50 dark:bg-red-500/10 border-red-200 dark:border-red-500/30 dark:shadow-[inset_0_0_15px_rgba(239,68,68,0.2)]'}`}>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={isLeft ? "#3B82F6" : "#EF4444"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               {step.icon}
                             </svg>
                           </div>
                           <div>
-                            <span className={`text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-full border ${isLeft ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
+                            <span className={`text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-full border ${isLeft ? 'bg-blue-50/50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-500/20' : 'bg-red-50/50 dark:bg-red-500/10 text-red-600 dark:text-red-500 border-red-200 dark:border-red-500/20'}`}>
                               {step.side}
                             </span>
                           </div>
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">{step.title}</h3>
-                        <p className="text-white/50 leading-relaxed font-light">{step.desc}</p>
+                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight transition-colors">{step.title}</h3>
+                        <p className="text-slate-600 dark:text-white/50 leading-relaxed font-light transition-colors">{step.desc}</p>
                       </div>
                       
                       {/* Timer Mockup */}
-                      <div className="mt-8 flex items-center justify-between border-t border-white/10 pt-5">
+                      <div className="mt-8 flex items-center justify-between border-t border-slate-200 dark:border-white/10 pt-5 transition-colors">
                         <div className="flex items-center gap-2">
                            <div className={`w-2 h-2 rounded-full animate-pulse ${isLeft ? 'bg-blue-500' : 'bg-red-500'}`} />
-                           <span className="text-xs text-white/40 uppercase tracking-widest font-mono font-bold">Stage {idx + 1}</span>
+                           <span className="text-xs text-slate-400 dark:text-white/40 uppercase tracking-widest font-mono font-bold transition-colors">Stage {idx + 1}</span>
                         </div>
-                        <span className="text-xl font-mono text-white/70 font-bold group-hover:text-white transition-colors tracking-widest">03:00</span>
+                        <span className="text-xl font-mono text-slate-800 dark:text-white/70 font-bold group-hover:text-slate-900 dark:group-hover:text-white transition-colors tracking-widest">03:00</span>
                       </div>
                     </div>
                   </div>
