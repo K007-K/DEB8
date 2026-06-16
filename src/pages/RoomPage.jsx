@@ -777,29 +777,30 @@ function RoomPage() {
   // Only render JoinModal if user is not a participant
   const JoinModal = () => {
     if (!room) return null;
+    
     // Step 1: Password prompt for private rooms
     if (room.isPrivate && joinStep === 1) {
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-xl font-semibold mb-4">Enter Room Password</h2>
+      return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 max-w-md w-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8)] font-sans">
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-6">Enter Password</h2>
             <div className="space-y-4">
               <input
                 type="password"
                 value={joinPassword}
                 onChange={e => setJoinPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                placeholder="Enter room password"
+                className="w-full px-5 py-4 bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none font-medium transition-all"
+                placeholder="Room password"
                 autoFocus
               />
-              {joinError && <div className="text-red-500 text-sm mt-2">{joinError}</div>}
+              {joinError && <div className="text-red-500 font-bold text-sm bg-red-100 dark:bg-red-500/10 px-4 py-2 rounded-lg">{joinError}</div>}
               <div className="flex justify-end mt-6">
                 <button
                   onClick={handlePasswordCheck}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                  className="px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50"
                   disabled={!joinPassword}
                 >
-                  Next
+                  Verify
                 </button>
               </div>
             </div>
@@ -807,84 +808,86 @@ function RoomPage() {
         </div>
       );
     }
-    // Step 2: Show join options (or directly for public rooms)
-    // For freeForAll, just show Join Room button
+
+    // Step 2: Show join options
     if (room.debateType === 'freeForAll') {
       return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-xl font-semibold mb-4">Join Debate</h2>
-            <div className="flex justify-end mt-6">
-              <button
-                onClick={() => handleJoinRoom('debater')}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-              >
-                Join Room
-              </button>
-            </div>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 max-w-md w-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8)] font-sans text-center">
+            <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Join Arena</h2>
+            <p className="text-slate-500 dark:text-white/60 font-medium mb-8">Enter this free-for-all debate and share your thoughts.</p>
+            <button
+              onClick={() => handleJoinRoom('debater')}
+              className="w-full px-6 py-4 bg-primary text-white text-lg font-bold rounded-xl hover:bg-primary/90 transition-all shadow-[0_4px_15px_rgba(251,121,11,0.4)]"
+            >
+              Enter Room
+            </button>
           </div>
         </div>
       );
     }
+
     // For 2vs2, show full join options
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
-        <div className="bg-white rounded-lg p-6 max-w-md w-full">
-          <h2 className="text-xl font-semibold mb-4">Join Debate</h2>
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div className="bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 max-w-md w-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8)] font-sans">
+          <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6 text-center">Join Arena</h2>
           <div className="space-y-4">
             <button
               onClick={() => setUserRole('debater')}
-              className={`w-full p-4 rounded-lg border ${
-                userRole === 'debater' ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300'
+              className={`w-full p-5 rounded-xl border text-left transition-all ${
+                userRole === 'debater' ? 'border-primary bg-primary/10' : 'border-slate-200 dark:border-white/10 hover:border-primary/50'
               }`}
             >
-              <h3 className="font-medium">Join as Debater</h3>
-              <p className="text-sm text-gray-600">Participate in the debate</p>
+              <h3 className={`text-lg font-bold ${userRole === 'debater' ? 'text-primary' : 'text-slate-900 dark:text-white'}`}>Join as Debater</h3>
+              <p className="text-sm text-slate-500 dark:text-white/60 font-medium mt-1">Participate in the debate</p>
             </button>
 
             <button
               onClick={() => setUserRole('audience')}
-              className={`w-full p-4 rounded-lg border ${
-                userRole === 'audience' ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300'
+              className={`w-full p-5 rounded-xl border text-left transition-all ${
+                userRole === 'audience' ? 'border-blue-500 bg-blue-500/10' : 'border-slate-200 dark:border-white/10 hover:border-blue-500/50'
               }`}
             >
-              <h3 className="font-medium">Join as Audience</h3>
-              <p className="text-sm text-gray-600">Watch and comment</p>
+              <h3 className={`text-lg font-bold ${userRole === 'audience' ? 'text-blue-500' : 'text-slate-900 dark:text-white'}`}>Join as Audience</h3>
+              <p className="text-sm text-slate-500 dark:text-white/60 font-medium mt-1">Watch and comment</p>
             </button>
 
             {room.debateType === '2vs2' && userRole === 'debater' && (
-              <div className="space-y-4 mt-4">
-                <h4 className="font-medium">Select Team</h4>
-                <div className="space-y-2">
+              <div className="space-y-4 mt-6 animate-in fade-in slide-in-from-top-2">
+                <h4 className="font-bold text-slate-900 dark:text-white text-center">Select Your Team</h4>
+                <div className="grid grid-cols-2 gap-4">
                   <button
                     onClick={() => setSelectedTeam('team1')}
-                    className={`w-full p-4 rounded-lg border ${
-                      selectedTeam === 'team1' ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300'
+                    className={`w-full p-4 rounded-xl border text-left transition-all ${
+                      selectedTeam === 'team1' ? 'border-indigo-500 bg-indigo-500/10' : 'border-slate-200 dark:border-white/10 hover:border-indigo-500/50'
                     }`}
                   >
-                    <h3 className="font-medium">{room.team1?.name || 'Team A'}</h3>
-                    <p className="text-sm text-gray-600">{room.team1?.description || 'Team A Position'}</p>
+                    <h3 className={`font-bold ${selectedTeam === 'team1' ? 'text-indigo-500' : 'text-slate-900 dark:text-white'}`}>{room.team1?.name || 'Team A'}</h3>
+                    <p className="text-xs text-slate-500 dark:text-white/60 font-medium mt-1 line-clamp-2">{room.team1?.description}</p>
                   </button>
                   <button
                     onClick={() => setSelectedTeam('team2')}
-                    className={`w-full p-4 rounded-lg border ${
-                      selectedTeam === 'team2' ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300'
+                    className={`w-full p-4 rounded-xl border text-left transition-all ${
+                      selectedTeam === 'team2' ? 'border-pink-500 bg-pink-500/10' : 'border-slate-200 dark:border-white/10 hover:border-pink-500/50'
                     }`}
                   >
-                    <h3 className="font-medium">{room.team2?.name || 'Team B'}</h3>
-                    <p className="text-sm text-gray-600">{room.team2?.description || 'Team B Position'}</p>
+                    <h3 className={`font-bold ${selectedTeam === 'team2' ? 'text-pink-500' : 'text-slate-900 dark:text-white'}`}>{room.team2?.name || 'Team B'}</h3>
+                    <p className="text-xs text-slate-500 dark:text-white/60 font-medium mt-1 line-clamp-2">{room.team2?.description}</p>
                   </button>
                 </div>
               </div>
             )}
 
-            <div className="flex justify-end mt-6">
+            <div className="flex justify-end mt-8">
               {(userRole === 'audience' || (userRole === 'debater' && (room.debateType !== '2vs2' || selectedTeam))) && (
                 <button
                   onClick={() => handleJoinRoom(userRole, selectedTeam)}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                  className={`w-full px-6 py-4 text-white text-lg font-bold rounded-xl transition-all shadow-lg ${
+                    userRole === 'audience' ? 'bg-blue-500 hover:bg-blue-600 shadow-[0_4px_15px_rgba(59,130,246,0.4)]' : 'bg-primary hover:bg-primary/90 shadow-[0_4px_15px_rgba(251,121,11,0.4)]'
+                  }`}
                 >
-                  Join Room
+                  Enter Arena
                 </button>
               )}
             </div>
@@ -955,74 +958,79 @@ function RoomPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading room...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center relative z-10">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-4">
-            <p>{error}</p>
+      <div className="min-h-screen flex items-center justify-center relative z-10 font-sans p-4">
+        <div className="bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 max-w-md w-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle className="w-8 h-8" />
           </div>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Error Loading Arena</h2>
+          <p className="text-slate-500 dark:text-white/60 font-medium mb-6">{error}</p>
           <button
             onClick={() => navigate('/home')}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            className="w-full px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-black font-bold rounded-xl hover:bg-primary dark:hover:bg-primary hover:text-white transition-all shadow-md"
           >
-            Return to Home
+            Return to Dashboard
           </button>
         </div>
       </div>
     );
   }
 
-  // Debug log for current state
-  console.log('Current room state:', {
-    debateType: room?.debateType,
-    userRole,
-    showJoinModal
-  });
-
   return (
-    <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
+    <div className="h-[calc(100vh-80px)] flex flex-col relative z-10 font-sans">
+      
+      {/* Background Glows */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none -z-10" />
+
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex flex-row items-center space-x-6 w-full">
-            <div className="flex flex-col items-start w-full">
-              <h1 className="text-3xl font-extrabold text-indigo-700 mb-1 text-left">{room?.topic}</h1>
-              {room?.description && (
-                <p className="text-base text-gray-500 font-medium mb-1 text-left">{room.description}</p>
-              )}
-              <span className="text-xs text-black text-left">Room ID: {room?.roomId}</span>
-            </div>
+      <div className="bg-white/40 dark:bg-black/40 backdrop-blur-xl border-b border-slate-200/60 dark:border-white/[0.08] px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shrink-0">
+        <div className="flex flex-col items-start w-full">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-1 line-clamp-1 flex items-center gap-2">
+            {room?.topic}
+            <span className={`px-2 py-0.5 rounded-lg text-xs font-bold ${
+              room?.status === 'LIVE' 
+                ? 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400' 
+                : 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400'
+            }`}>
+              {room?.status || 'LIVE'}
+            </span>
+          </h1>
+          <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-white/50 font-medium">
+            <span>ID: {room?.roomId}</span>
+            <span>•</span>
+            <span className="flex items-center gap-1"><Users className="w-4 h-4"/> {room?.participants?.length || 0}</span>
           </div>
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={handleShare}
-              className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-            >
-              <Share2 className="w-5 h-5 mr-2" />
-              Share Room
-            </button>
+        </div>
+        
+        <div className="flex items-center space-x-3 w-full sm:w-auto">
+          <button
+            onClick={handleShare}
+            className="flex-1 sm:flex-none flex items-center justify-center px-4 py-2.5 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 transition-colors border border-transparent dark:border-white/10"
+          >
+            <Share2 className="w-4 h-4 mr-2" />
+            Share
+          </button>
           <button
             onClick={handleLeaveRoom}
-            className="flex items-center px-4 py-2 bg-red-100 hover:bg-red-200 rounded-lg text-red-700 font-medium shadow-sm"
+            className="flex-1 sm:flex-none flex items-center justify-center px-4 py-2.5 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 font-bold rounded-xl hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors border border-red-100 dark:border-red-500/20"
           >
-            <span className="mr-2">Leave Room</span>
+            <LogOut className="w-4 h-4 mr-2" />
+            Leave
           </button>
-          </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-hidden">
+      {/* Main Content (Chats) */}
+      <div className="flex-1 overflow-hidden relative">
         {canAccessChat ? (
           room?.debateType === '2vs2' ? (
             <TeamDebateRoom
@@ -1036,7 +1044,7 @@ function RoomPage() {
               handleSendMessage={sendMessage}
               formatDate={formatDate}
               messagesEndRef={messagesEndRef}
-              audienceChatWhiteBg
+              audienceChatWhiteBg={false}
               user={user}
               isConnected={isConnected}
             />
@@ -1057,7 +1065,7 @@ function RoomPage() {
         ) : null}
       </div>
 
-      {/* Only show join modal if user is not a participant */}
+      {/* Join Modal */}
       {showJoinModal && <JoinModal />}
     </div>
   );
