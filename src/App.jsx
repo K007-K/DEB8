@@ -120,9 +120,28 @@ function App() {
             toastOptions={{
               duration: 3000,
               style: {
-                background: '#333',
-                color: '#fff',
+                background: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                color: '#1e293b',
+                border: '1px solid rgba(226, 232, 240, 0.6)',
+                boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)',
+                borderRadius: '1rem',
+                fontWeight: '600',
               },
+              success: {
+                iconTheme: {
+                  primary: '#10b981',
+                  secondary: '#ffffff',
+                },
+              },
+              error: {
+                iconTheme: {
+                  primary: '#ef4444',
+                  secondary: '#ffffff',
+                },
+              },
+              className: 'dark:!bg-black/60 dark:!text-white dark:!border-white/10 dark:!shadow-[0_10px_40px_rgba(0,0,0,0.8)]',
             }}
           />
         </div>

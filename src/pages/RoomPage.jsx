@@ -1031,38 +1031,35 @@ function RoomPage() {
 
       {/* Main Content (Chats) */}
       <div className="flex-1 overflow-hidden relative">
-        {canAccessChat ? (
-          room?.debateType === '2vs2' ? (
-            <TeamDebateRoom
-              room={room}
-              userRole={userRole}
-              selectedTeam={selectedTeam}
-              debateMessages={debateMessages}
-              audienceMessages={audienceMessages}
-              message={message}
-              setMessage={setMessage}
-              handleSendMessage={sendMessage}
-              formatDate={formatDate}
-              messagesEndRef={messagesEndRef}
-              audienceChatWhiteBg={false}
-              user={user}
-              isConnected={isConnected}
-            />
-          ) : (
-            <FreeForAllRoom
-              messages={debateMessages}
-              message={message}
-              setMessage={setMessage}
-              handleSendMessage={sendMessage}
-              formatDate={formatDate}
-              messagesEndRef={messagesEndRef}
-              room={room}
-              onLeaveRoom={handleLeaveRoom}
-              user={user}
-              isConnected={isConnected}
-            />
-          )
-        ) : null}
+        {room?.debateType === '2vs2' ? (
+          <TeamDebateRoom
+            room={room}
+            userRole={userRole}
+            selectedTeam={selectedTeam}
+            debateMessages={debateMessages}
+            audienceMessages={audienceMessages}
+            message={message}
+            setMessage={setMessage}
+            handleSendMessage={sendMessage}
+            formatDate={formatDate}
+            messagesEndRef={messagesEndRef}
+            user={user}
+            isConnected={isConnected}
+          />
+        ) : (
+          <FreeForAllRoom
+            messages={debateMessages}
+            message={message}
+            setMessage={setMessage}
+            handleSendMessage={sendMessage}
+            formatDate={formatDate}
+            messagesEndRef={messagesEndRef}
+            room={room}
+            onLeaveRoom={handleLeaveRoom}
+            user={user}
+            isConnected={isConnected}
+          />
+        )}
       </div>
 
       {/* Join Modal */}
