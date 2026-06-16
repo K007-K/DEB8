@@ -77,17 +77,52 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-10 pointer-events-none">
         
         {/* Card 1: Live Poll */}
-        <div ref={card1Ref} className="absolute top-[20%] left-[8%] md:left-[12%] w-52 h-60 bg-gradient-to-br from-white/[0.08] to-transparent backdrop-blur-md border border-white/[0.08] rounded-2xl p-5 shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15),0_0_40px_rgba(251,121,11,0.1)] flex flex-col justify-between hidden md:flex overflow-hidden group">
+        <div ref={card1Ref} className="absolute top-[20%] left-[8%] md:left-[12%] w-56 h-auto bg-gradient-to-br from-white/[0.08] to-transparent backdrop-blur-xl border border-white/[0.12] rounded-2xl p-5 shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.2),0_0_40px_rgba(251,121,11,0.1)] flex flex-col gap-4 hidden md:flex overflow-hidden group">
           {/* Subtle Glare */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.04] to-transparent opacity-50 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.08] to-transparent opacity-50 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
           
-          <div className="w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-lg shadow-inner backdrop-blur-sm">📊</div>
-          <div className="relative z-10">
-            <div className="h-2 w-full bg-black/50 rounded-full mb-3 overflow-hidden shadow-[inset_0_1px_2px_rgba(0,0,0,0.8)]">
-              <div className="h-full bg-gradient-to-r from-[#FF9900] to-primary rounded-full w-[70%] shadow-[0_0_10px_rgba(251,121,11,0.8)]" />
+          <div className="flex items-center justify-between relative z-10">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-white/10 to-transparent border border-white/10 flex items-center justify-center shadow-inner backdrop-blur-md">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#orange-gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <defs>
+                  <linearGradient id="orange-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#FF9900" />
+                    <stop offset="100%" stopColor="#FB790B" />
+                  </linearGradient>
+                </defs>
+                <path d="M18 20V10M12 20V4M6 20v-6"/>
+              </svg>
             </div>
-            <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest mb-1">Trending Poll</p>
-            <p className="text-white text-base font-medium tracking-tight">AI vs Human?</p>
+            <span className="text-[10px] text-primary font-bold uppercase tracking-widest bg-primary/10 px-2 py-1 rounded-full border border-primary/20">Live</span>
+          </div>
+
+          <div className="relative z-10">
+            <p className="text-white text-base font-bold tracking-tight mb-4">AI vs Human Creativity?</p>
+            
+            {/* Poll Results UI */}
+            <div className="space-y-3">
+              {/* Option 1 */}
+              <div>
+                <div className="flex justify-between text-xs mb-1.5">
+                  <span className="text-white/70 font-medium">AI</span>
+                  <span className="text-white font-bold">78%</span>
+                </div>
+                <div className="h-1.5 w-full bg-black/60 rounded-full overflow-hidden shadow-[inset_0_1px_2px_rgba(0,0,0,0.8)]">
+                  <div className="h-full bg-gradient-to-r from-[#FFCC00] to-primary rounded-full w-[78%] shadow-[0_0_10px_rgba(251,121,11,0.8)]" />
+                </div>
+              </div>
+              
+              {/* Option 2 */}
+              <div>
+                <div className="flex justify-between text-xs mb-1.5">
+                  <span className="text-white/70 font-medium">Human</span>
+                  <span className="text-white/50 font-bold">22%</span>
+                </div>
+                <div className="h-1.5 w-full bg-black/60 rounded-full overflow-hidden shadow-[inset_0_1px_2px_rgba(0,0,0,0.8)]">
+                  <div className="h-full bg-white/20 rounded-full w-[22%]" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
