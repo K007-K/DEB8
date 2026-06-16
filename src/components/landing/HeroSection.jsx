@@ -155,7 +155,7 @@ export default function HeroSection() {
         <h1 className="text-[12vw] md:text-[9rem] leading-[0.8] font-black tracking-tighter mb-8 uppercase flex flex-col items-center select-none">
           <span ref={title1Ref} className="text-slate-900 dark:text-white block transition-colors" style={{ transformStyle: 'preserve-3d' }}>Master The</span>
           <span ref={title2Ref} className="block mt-1 text-slate-900 dark:text-white transition-colors" style={{ transformStyle: 'preserve-3d' }}>
-            <span className="text-transparent" style={{ WebkitTextStroke: '2px currentColor' }}>Real-</span>
+            <span className="text-stroke-dynamic">Real-</span>
             <span className="bg-gradient-to-r from-slate-900 via-primary to-[#FF9900] dark:from-white dark:via-primary dark:to-[#FF9900] bg-clip-text text-transparent">Time</span>
           </span>
         </h1>

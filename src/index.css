@@ -9,6 +9,17 @@
   }
 }
 
+@layer utilities {
+  .text-stroke-dynamic {
+    -webkit-text-stroke: 2px #0f172a; /* slate-900 */
+    color: transparent;
+  }
+  .dark .text-stroke-dynamic {
+    -webkit-text-stroke: 2px #ffffff;
+    color: transparent;
+  }
+}
+
 /* Lenis Recommended CSS */
 html.lenis, html.lenis body {
   height: auto;
