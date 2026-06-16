@@ -75,7 +75,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-10 pointer-events-none">
         
         {/* Card 1: Live Poll */}
-        <div ref={card1Ref} className="absolute top-[20%] left-[8%] md:left-[12%] w-56 h-auto bg-white/70 dark:bg-gradient-to-br dark:from-white/[0.08] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.12] rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.2),0_0_40px_rgba(251,121,11,0.1)] flex flex-col gap-4 hidden md:flex overflow-hidden group">
+        <div ref={card1Ref} className="absolute top-[20%] left-[8%] md:left-[12%] w-56 h-auto bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-white/[0.08] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.12] rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.2),0_0_40px_rgba(251,121,11,0.1)] flex flex-col gap-4 hidden md:flex overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 dark:via-white/[0.08] to-transparent opacity-50 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
           
           <div className="flex items-center justify-between relative z-10">
@@ -122,7 +122,7 @@ export default function HeroSection() {
         </div>
 
         {/* Card 2: Debate Match */}
-        <div ref={card2Ref} className="absolute top-[60%] right-[8%] md:right-[12%] w-64 h-32 bg-white/70 dark:bg-gradient-to-br dark:from-white/[0.08] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15),0_0_40px_rgba(251,121,11,0.1)] flex items-center gap-5 hidden md:flex overflow-hidden group">
+        <div ref={card2Ref} className="absolute top-[60%] right-[8%] md:right-[12%] w-64 h-32 bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-white/[0.08] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15),0_0_40px_rgba(251,121,11,0.1)] flex items-center gap-5 hidden md:flex overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 dark:via-white/[0.04] to-transparent opacity-50 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
           
           <div className="w-12 h-12 rounded-full bg-white dark:bg-black/50 flex items-center justify-center border border-primary/30 text-primary font-black text-xs shadow-sm dark:shadow-[inset_0_0_15px_rgba(251,121,11,0.2)]">VS</div>
@@ -136,7 +136,7 @@ export default function HeroSection() {
         </div>
 
         {/* Card 3: Speaker */}
-        <div ref={card3Ref} className="absolute top-[15%] right-[22%] md:right-[18%] w-40 h-40 bg-white/70 dark:bg-gradient-to-br dark:from-white/[0.08] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15),0_0_30px_rgba(251,121,11,0.05)] flex flex-col items-center justify-center hidden lg:flex overflow-hidden group">
+        <div ref={card3Ref} className="absolute top-[15%] right-[22%] md:right-[18%] w-40 h-40 bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-white/[0.08] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15),0_0_30px_rgba(251,121,11,0.05)] flex flex-col items-center justify-center hidden lg:flex overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 dark:via-white/[0.04] to-transparent opacity-50 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
           
           <div className="relative z-10 flex flex-col items-center">

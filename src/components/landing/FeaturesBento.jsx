@@ -58,7 +58,7 @@ export default function FeaturesBento() {
         <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-3 gap-6 auto-rows-[250px]">
           
           {/* Feature 1: Structured Arenas (Large) */}
-          <div ref={addToRefs} className="md:col-span-2 md:row-span-2 bg-white/70 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-8 flex flex-col justify-between group overflow-hidden relative shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-slate-300 dark:hover:border-primary/30 transition-colors duration-500">
+          <div ref={addToRefs} className="md:col-span-2 md:row-span-2 bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-8 flex flex-col justify-between group overflow-hidden relative shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-slate-300 dark:hover:border-primary/30 transition-colors duration-500">
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/0 via-primary/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
             <div className="relative z-10">
@@ -83,7 +83,7 @@ export default function FeaturesBento() {
           </div>
 
           {/* Feature 2: Live Polling (Small) */}
-          <div ref={addToRefs} className="md:col-span-1 md:row-span-1 bg-white/70 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-6 flex flex-col justify-between group relative overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-slate-300 dark:hover:border-white/20 transition-colors duration-500">
+          <div ref={addToRefs} className="md:col-span-1 md:row-span-1 bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-6 flex flex-col justify-between group relative overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-slate-300 dark:hover:border-white/20 transition-colors duration-500">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-6">
                 <div className="w-10 h-10 rounded-full bg-white dark:bg-black border border-slate-200 dark:border-white/10 flex items-center justify-center shadow-sm dark:shadow-inner group-hover:border-slate-300 dark:group-hover:border-white/30 transition-colors">
@@ -129,7 +129,7 @@ export default function FeaturesBento() {
           </div>
 
           {/* Feature 4: Role-Based Entry (Small) */}
-          <div ref={addToRefs} className="md:col-span-1 md:row-span-1 bg-white/70 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-6 flex flex-col justify-between group relative overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-slate-300 dark:hover:border-white/20 transition-colors duration-500">
+          <div ref={addToRefs} className="md:col-span-1 md:row-span-1 bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-6 flex flex-col justify-between group relative overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-slate-300 dark:hover:border-white/20 transition-colors duration-500">
             <div className="relative z-10">
               <div className="w-10 h-10 rounded-full bg-white dark:bg-black border border-slate-200 dark:border-white/10 flex items-center justify-center mb-6 shadow-sm dark:shadow-inner group-hover:border-slate-300 dark:group-hover:border-white/30 transition-colors">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FB790B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -140,7 +140,7 @@ export default function FeaturesBento() {
           </div>
 
           {/* Feature 5: Dedicated Team Channels (Full Width) */}
-          <div ref={addToRefs} className="md:col-span-4 md:row-span-1 bg-white/70 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-8 md:px-16 flex items-center justify-between group relative overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-primary/30 transition-colors duration-500">
+          <div ref={addToRefs} className="md:col-span-4 md:row-span-1 bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-8 md:px-16 flex items-center justify-between group relative overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-primary/30 transition-colors duration-500">
             <div className="relative z-10 max-w-2xl">
                <h3 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white tracking-tight mb-3 transition-colors">Dedicated Team Channels</h3>
                <p className="text-base text-slate-600 dark:text-white/60 font-light leading-relaxed transition-colors">Strategy happens behind the scenes. Use private team chats to coordinate rebuttals and arguments with your partner during a live 2v2 debate.</p>
