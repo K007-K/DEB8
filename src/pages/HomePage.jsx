@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 import TrendingPolls from '../components/TrendingPolls';
+import DebateCard from '../components/DebateCard';
+import PollCard from '../components/PollCard';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -77,118 +79,7 @@ export default function HomePage() {
     return `${Math.floor(hours / 24)}d ago`;
   };
 
-  const DebateCard = ({ debate }) => {
-    const is2v2 = debate.debateType === '2vs2';
-    return (
-      <div className="bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-6 font-sans transition-all duration-500 ease-out hover:scale-[1.02] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-primary/50 group relative overflow-hidden flex flex-col justify-between">
-        <div className="absolute inset-0 bg-gradient-to-tr from-primary/0 via-primary/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="relative z-10 flex-1">
-          <div className="flex items-center gap-2 mb-3">
-            <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wider ${
-              debate.status === 'LIVE' ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' : 'bg-slate-100 text-slate-700 dark:bg-white/10 dark:text-white/70'
-            }`}>
-              {debate.status}
-            </span>
-            <span className="text-xs text-slate-500 dark:text-white/50 font-medium">
-              {formatTimeAgo(debate.startTime || debate.createdAt)}
-            </span>
-            <span className="px-2 py-1 rounded text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary">{debate.category || 'Uncategorized'}</span>
-            {debate.isPrivate && (
-              <span className="flex items-center gap-1 ml-auto">
-                <Lock className="w-3 h-3 text-red-500" />
-              </span>
-            )}
-          </div>
-          <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white leading-snug group-hover:text-primary transition-colors duration-300 line-clamp-2">
-            {debate.topic}
-          </h3>
-          <p className="text-sm text-slate-600 dark:text-white/60 mb-4 line-clamp-2">{debate.description}</p>
-        </div>
 
-        <div className="relative z-10 space-y-3 mb-6 mt-4 p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5">
-          <div className="flex items-center justify-between text-slate-600 dark:text-white/70 text-sm font-medium">
-            <div className="flex items-center">
-              <Users className="w-4 h-4 mr-2 text-primary" />
-              {is2v2 ? `2v2 Teams` : 'Free For All'}
-            </div>
-            <div className="flex items-center">
-              <MessageSquare className="w-4 h-4 mr-2 text-primary" />
-              {debate.messages?.length || 0} msgs
-            </div>
-          </div>
-        </div>
-
-        <div className="relative z-10 flex justify-between items-center mt-auto">
-          <div className="flex items-center space-x-2">
-            <div className="flex -space-x-2">
-              {debate.participants && debate.participants.length > 0 && debate.participants.slice(0, 3).map((participant, index) => (
-                <div
-                  key={index}
-                  className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-white dark:border-[#0f0f0f] flex items-center justify-center text-xs font-bold text-slate-700 dark:text-white"
-                  title={participant.username}
-                >
-                  {participant.username[0].toUpperCase()}
-                </div>
-              ))}
-            </div>
-            {debate.participants && debate.participants.length > 3 && (
-              <span className="text-slate-500 dark:text-white/50 text-xs font-bold">
-                +{debate.participants.length - 3}
-              </span>
-            )}
-          </div>
-          <button
-            onClick={() => navigate(`/room/${debate.roomId}`)}
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 dark:bg-white text-white dark:text-black hover:scale-110 hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white transition-all duration-300 shadow-md"
-          >
-            <ArrowRight className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  const PollCard = ({ poll }) => (
-    <div className="bg-white/70 dark:bg-black/40 dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent backdrop-blur-xl border border-slate-200/60 dark:border-white/[0.08] rounded-3xl p-6 font-sans transition-all duration-500 ease-out hover:scale-[1.02] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-blue-500/50 group relative overflow-hidden flex flex-col">
-      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/0 via-blue-500/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="relative z-10 flex-1">
-        <h3 className="text-xl font-bold mb-6 text-slate-900 dark:text-white leading-snug group-hover:text-blue-500 transition-colors duration-300 line-clamp-2">
-          {poll.topic}
-        </h3>
-        <div className="space-y-4">
-          {poll.options?.map((option, index) => {
-            const percentage = poll.totalVotes > 0 ? (option.votes / poll.totalVotes) * 100 : 0;
-            return (
-              <div key={index} className="relative">
-                <div className="flex justify-between text-sm mb-1.5 font-bold">
-                  <span className="text-slate-700 dark:text-white/80">{option.text}</span>
-                  <span className="text-slate-500 dark:text-white/50">{option.votes} ({percentage.toFixed(0)}%)</span>
-                </div>
-                <div className="h-2.5 bg-slate-100 dark:bg-white/10 rounded-full overflow-hidden shadow-inner">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${percentage}%` }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <div className="relative z-10 flex items-center justify-between mt-6 pt-4 border-t border-slate-200/60 dark:border-white/10">
-        <div className="flex items-center text-sm font-bold text-slate-500 dark:text-white/50">
-          <Users className="w-4 h-4 mr-1.5" />
-          {poll.totalVotes || 0} votes
-        </div>
-        <div className="flex items-center text-sm font-bold text-blue-500">
-          <Clock className="w-4 h-4 mr-1.5" />
-          {formatTimeAgo(poll.createdAt)}
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 relative z-10 font-sans">
