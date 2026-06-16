@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MessageSquare, Users, Clock, Send, ArrowLeft, ThumbsUp, ThumbsDown, Flame, Zap, X, AlertTriangle, Share2 } from 'lucide-react';
+import { MessageSquare, Users, Clock, Send, ArrowLeft, ThumbsUp, ThumbsDown, Flame, Zap, X, AlertTriangle, Share2, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import io from 'socket.io-client';
 import toast from 'react-hot-toast';
