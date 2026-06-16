@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Users, Clock, MessageSquare, Plus, Minus, ArrowRight, BarChart2, LogOut } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MessageSquare, BarChart2, Plus, Minus, Users, ArrowRight, Lock, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
-import HomePageHeader from '../components/HomePageHeader';
 import { categories } from './categories';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 function CreateRoom() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
+  
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -32,23 +31,15 @@ function CreateRoom() {
     pollDurationUnit: 'hours'
   });
 
-  // Get the type from URL parameters
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const type = params.get('type');
 
     if (type === 'debate') {
-      setFormData(prev => ({
-        ...prev,
-        format: 'fight'
-      }));
+      setFormData(prev => ({ ...prev, format: 'fight' }));
       setCurrentStep(2);
     } else if (type === 'poll') {
-      setFormData(prev => ({
-        ...prev,
-        format: 'poll',
-        pollOptions: ['', '']
-      }));
+      setFormData(prev => ({ ...prev, format: 'poll', pollOptions: ['', ''] }));
       setCurrentStep(2);
     }
   }, [location.search]);
@@ -93,24 +84,23 @@ function CreateRoom() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!user) {
+        toast.error('Please login to create');
+        navigate('/auth?mode=login');
+        return;
+      }
+
+      setLoading(true);
       let requestData;
-      
+
       if (formData.format === 'poll') {
-        // Validate poll options
         const validOptions = formData.pollOptions.filter(opt => opt.trim());
         if (validOptions.length < 2) {
           toast.error('Please provide at least 2 valid poll options');
+          setLoading(false);
           return;
         }
 
-        // Check if user is logged in
-        if (!user) {
-          toast.error('Please login to create a poll');
-          navigate('/auth?mode=login');
-          return;
-        }
-
-        // Prepare data for poll creation
         requestData = {
           question: formData.topic,
           options: validOptions,
@@ -118,25 +108,13 @@ function CreateRoom() {
           endDate: new Date(Date.now() + parseInt(formData.pollExpiration) * 1000).toISOString()
         };
 
-        // Log the request data for debugging
-        console.log('Sending request with data:', requestData);
-
-        const response = await api.post('/api/polls', requestData);
-
+        await api.post('/api/polls', requestData);
         toast.success('Poll created successfully!');
         navigate('/polls');
+
       } else {
-        // Check if user is logged in
-        if (!user) {
-          toast.error('Please login to create a debate');
-          navigate('/auth?mode=login');
-          return;
-        }
-
-        // Generate a unique room ID
         const roomId = `room_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-        // Prepare data for debate creation
+        
         requestData = {
           roomId,
           topic: formData.topic,
@@ -162,7 +140,6 @@ function CreateRoom() {
           endDate: new Date(Date.now() + 24 * 60 * 60 * 1000)
         };
 
-        // Add team information for 2vs2 debates
         if (formData.debateType === '2vs2') {
           requestData.team1 = {
             name: formData.teamA.name,
@@ -178,16 +155,11 @@ function CreateRoom() {
           };
         }
 
-        // Only add password if the debate is private
         if (formData.isPrivate && formData.password) {
           requestData.password = formData.password;
         }
 
-        // Log the request data for debugging
-        console.log('Sending request with data:', requestData);
-
         const response = await api.post('/api/rooms', requestData);
-        console.log('Server response:', response.data);
 
         if (response.data.success) {
           toast.success('Debate room created successfully!');
@@ -197,19 +169,11 @@ function CreateRoom() {
         }
       }
     } catch (error) {
-      console.error(`Error creating ${formData.format === 'poll' ? 'poll' : 'debate room'}:`, error);
-      const errorMessage = error.response?.data?.details || error.response?.data?.error || error.message || `Failed to create ${formData.format === 'poll' ? 'poll' : 'debate room'}`;
-      toast.error(errorMessage);
+      console.error(error);
+      toast.error(error.response?.data?.message || error.message || 'Failed to create');
+    } finally {
+      setLoading(false);
     }
-  };
-
-  const handleFormatSelect = (format) => {
-    setFormData(prev => ({
-      ...prev,
-      format,
-      pollOptions: format === 'poll' ? ['', ''] : prev.pollOptions
-    }));
-    setCurrentStep(2);
   };
 
   const validateStep = (step) => {
@@ -238,618 +202,386 @@ function CreateRoom() {
     }
   };
 
-  const renderPollForm = () => (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="space-y-6 transition-all duration-300 ease-in-out"
-      transition={{ duration: 1.2, ease: 'easeInOut' }}
-    >
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Poll Question*
-        </label>
-        <input
-          type="text"
-          name="topic"
-          value={formData.topic}
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          placeholder="Enter your question..."
-          required
-        />
-      </div>
+  const handleFormatSelect = (format) => {
+    setFormData(prev => ({
+      ...prev,
+      format,
+      pollOptions: format === 'poll' ? ['', ''] : prev.pollOptions
+    }));
+    setCurrentStep(2);
+  };
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Category
-        </label>
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="category-label">Category</InputLabel>
-          <Select
-            labelId="category-label"
-            id="category"
-            name="category"
-            value={formData.category}
-            label="Category"
-            onChange={handleChange}
-            required
-          >
-            {categories.filter(c => c !== 'All').map((category) => (
-              <MenuItem key={category} value={category}>
-                {category}
-              </MenuItem>
+  return (
+    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4 relative z-10 font-sans mt-8">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+      
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] relative overflow-hidden"
+      >
+        {/* Progress Dots */}
+        {formData.format && (
+          <div className="flex justify-center items-center gap-3 mb-10">
+            {[2, 3, formData.format === 'fight' ? 4 : null].filter(Boolean).map((step, idx) => (
+              <React.Fragment key={step}>
+                {idx > 0 && (
+                  <div className={`h-1 w-12 rounded-full transition-colors duration-500 ${currentStep >= step ? 'bg-primary' : 'bg-slate-200 dark:bg-white/10'}`} />
+                )}
+                <div 
+                  className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-500 ${
+                    currentStep === step 
+                      ? 'bg-primary text-white shadow-[0_0_15px_rgba(251,121,11,0.5)] scale-110' 
+                      : currentStep > step 
+                        ? 'bg-primary text-white' 
+                        : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-white/30'
+                  }`}
+                >
+                  {currentStep > step ? <Check className="w-4 h-4" /> : step - 1}
+                </div>
+              </React.Fragment>
             ))}
-          </Select>
-        </FormControl>
-      </div>
+          </div>
+        )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Poll Options* (min 2, max 6)
-        </label>
-        <div className="space-y-3">
-          {formData.pollOptions.map((option, index) => (
-            <div key={index} className="flex gap-2">
-              <input
-                type="text"
-                value={option}
-                onChange={(e) => handlePollOptionChange(index, e.target.value)}
-                placeholder={`Option ${index + 1}`}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-              />
-              {index >= 2 && (
+        <AnimatePresence mode="wait">
+          {currentStep === 1 && (
+            <motion.div
+              key="step1"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-8"
+            >
+              <div className="text-center mb-8">
+                <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2">Create Room</h1>
+                <p className="text-lg text-slate-600 dark:text-white/60 font-medium">What would you like to build today?</p>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <button
                   type="button"
-                  onClick={() => removePollOption(index)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                  onClick={() => handleFormatSelect('fight')}
+                  className="group relative bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-3xl p-8 text-left hover:border-primary dark:hover:border-primary transition-all duration-300 hover:shadow-[0_8px_30px_rgba(251,121,11,0.2)]"
                 >
-                  <Minus className="w-5 h-5" />
+                  <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <MessageSquare className="w-7 h-7 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Debate Arena</h3>
+                  <p className="text-sm text-slate-500 dark:text-white/50 font-medium leading-relaxed">Create a live text debate. Choose between team battles or free-for-all discussions.</p>
                 </button>
-              )}
-            </div>
-          ))}
-        </div>
-        {formData.pollOptions.length < 6 && (
-          <button
-            type="button"
-            onClick={addPollOption}
-            className="mt-3 flex items-center text-indigo-600 hover:text-indigo-700"
-          >
-            <Plus className="w-5 h-5 mr-1" />
-            Add Option
-          </button>
-        )}
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Poll Duration
-        </label>
-        <div className="flex gap-4">
-          <select
-            name="pollExpiration"
-            value={formData.pollExpiration}
-            onChange={handleChange}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            {formData.pollDurationUnit === 'hours' ? (
-              <>
-                <option value="3600">1 hour</option>
-                <option value="7200">2 hours</option>
-                <option value="14400">4 hours</option>
-                <option value="28800">8 hours</option>
-                <option value="43200">12 hours</option>
-                <option value="86400">24 hours</option>
-              </>
-            ) : (
-              <>
-                <option value="86400">1 day</option>
-                <option value="172800">2 days</option>
-                <option value="259200">3 days</option>
-                <option value="432000">5 days</option>
-                <option value="604800">7 days (1 week)</option>
-                <option value="1209600">14 days (2 weeks)</option>
-                <option value="2592000">30 days (1 month)</option>
-              </>
-            )}
-          </select>
-          <select
-            name="pollDurationUnit"
-            value={formData.pollDurationUnit}
-            onChange={handleChange}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            <option value="hours">Hours</option>
-            <option value="days">Days</option>
-          </select>
-        </div>
-      </div>
-    </motion.div>
-  );
-
-  const renderStep = () => {
-    // If format is not selected and we're on step 1, show format selection
-    if (currentStep === 1 && !formData.format) {
-      return (
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="space-y-6 transition-all duration-300 ease-in-out"
-          transition={{ duration: 1.2, ease: 'easeInOut' }}
-        >
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-4">
-              What would you like to create?
-            </label>
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                type="button"
-                onClick={() => handleFormatSelect('fight')}
-                className={`p-6 border rounded-lg text-left ${
-                  formData.format === 'fight'
-                    ? 'border-indigo-600 bg-indigo-50'
-                    : 'border-gray-300'
-                }`}
-              >
-                <div className="flex items-center mb-2">
-                  <MessageSquare className="w-6 h-6 mr-2 text-indigo-600" />
-                  <div className="font-medium text-lg">Fight with Words</div>
-                </div>
-                <div className="text-sm text-gray-600">
-                  Create a live text debate between participants. Choose between team debates or free-for-all discussions.
-                </div>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleFormatSelect('poll')}
-                className={`p-6 border rounded-lg text-left ${
-                  formData.format === 'poll'
-                    ? 'border-indigo-600 bg-indigo-50'
-                    : 'border-gray-300'
-                }`}
-              >
-                <div className="flex items-center mb-2">
-                  <BarChart2 className="w-6 h-6 mr-2 text-indigo-600" />
-                  <div className="font-medium text-lg">Poll Debate</div>
-                </div>
-                <div className="text-sm text-gray-600">
-                  Create a poll-based debate where participants can vote and discuss their choices.
-                </div>
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      );
-    }
-
-    // If it's a poll, show the poll form
-    if (formData.format === 'poll') {
-      return renderPollForm();
-    }
-
-    // For debates, show the multi-step form
-    switch (currentStep) {
-      case 2:
-        return (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="space-y-6 transition-all duration-300 ease-in-out"
-            transition={{ duration: 1.2, ease: 'easeInOut' }}
-          >
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {formData.format === 'poll' ? 'Poll Question*' : 'Debate Title*'}
-              </label>
-              <input
-                type="text"
-                name="topic"
-                value={formData.topic}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                placeholder={formData.format === 'poll' ? 'Enter your question...' : 'Make it clear and engaging'}
-                required
-              />
-            </div>
-
-            {formData.format !== 'poll' && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description*
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  rows="4"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  placeholder="Provide context and what you hope to discuss"
-                  required
-                />
-              </div>
-            )}
-
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category*
-              </label>
-              <FormControl fullWidth margin="normal">
-                <InputLabel id="category-label">Category</InputLabel>
-                <Select
-                  labelId="category-label"
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  label="Category"
-                  onChange={handleChange}
-                  required
+                
+                <button
+                  type="button"
+                  onClick={() => handleFormatSelect('poll')}
+                  className="group relative bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-3xl p-8 text-left hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(59,130,246,0.2)]"
                 >
-                  {categories.filter(c => c !== 'All').map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-          </motion.div>
-        );
+                  <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <BarChart2 className="w-7 h-7 text-blue-500" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-blue-500 transition-colors">Poll Room</h3>
+                  <p className="text-sm text-slate-500 dark:text-white/50 font-medium leading-relaxed">Create a real-time poll where participants can vote and shape public opinion.</p>
+                </button>
+              </div>
+            </motion.div>
+          )}
 
-      case 3:
-        if (formData.format === 'fight') {
-          return (
+          {currentStep === 2 && (
             <motion.div
+              key="step2"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="space-y-6 transition-all duration-300 ease-in-out"
-              transition={{ duration: 1.2, ease: 'easeInOut' }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
             >
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Debate Type*
-                </label>
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setFormData(prev => ({ ...prev, debateType: '2vs2' }))}
-                    className={`p-4 border rounded-lg text-left ${
-                      formData.debateType === '2vs2'
-                        ? 'border-indigo-600 bg-indigo-50'
-                        : 'border-gray-300'
-                    }`}
-                  >
-                    <div className="font-medium mb-1">Team vs Team</div>
-                    <div className="text-sm text-gray-600">
-                      Structured team debate
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setFormData(prev => ({ ...prev, debateType: 'freeForAll' }))}
-                    className={`p-4 border rounded-lg text-left ${
-                      formData.debateType === 'freeForAll'
-                        ? 'border-indigo-600 bg-indigo-50'
-                        : 'border-gray-300'
-                    }`}
-                  >
-                    <div className="font-medium mb-1">Free-for-All</div>
-                    <div className="text-sm text-gray-600">
-                      Open discussion format
-                    </div>
-                  </button>
-                </div>
+              <div className="text-center mb-8">
+                <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
+                  {formData.format === 'poll' ? 'Design Your Poll' : 'Configure Arena'}
+                </h1>
+                <p className="text-slate-600 dark:text-white/60 font-medium">Let's start with the basics.</p>
               </div>
 
-              {formData.debateType === '2vs2' && (
-                <>
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <h3 className="font-medium text-gray-900">Team A</h3>
-                      <div>
-                        <label className="block text-sm text-gray-700 mb-1">
-                          Team Name*
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.teamA.name}
-                          onChange={(e) => handleTeamChange('teamA', 'name', e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm text-gray-700 mb-1">
-                          Context*
-                        </label>
-                        <textarea
-                          value={formData.teamA.context}
-                          onChange={(e) => handleTeamChange('teamA', 'context', e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                          rows="3"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <h3 className="font-medium text-gray-900">Team B</h3>
-                      <div>
-                        <label className="block text-sm text-gray-700 mb-1">
-                          Team Name*
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.teamB.name}
-                          onChange={(e) => handleTeamChange('teamB', 'name', e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm text-gray-700 mb-1">
-                          Context*
-                        </label>
-                        <textarea
-                          value={formData.teamB.context}
-                          onChange={(e) => handleTeamChange('teamB', 'context', e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                          rows="3"
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Number of Debaters per Team
-                    </label>
-                    <input
-                      type="number"
-                      name="maxDebaters"
-                      min="1"
-                      placeholder="Enter number or leave blank for no limit"
-                      value={formData.maxDebaters === '' ? '' : formData.maxDebaters}
-                      onChange={e => {
-                        const value = e.target.value;
-                        setFormData(prev => ({
-                          ...prev,
-                          maxDebaters: value === '' ? '' : Math.max(1, parseInt(value))
-                        }));
-                      }}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    />
-                    <div className="flex items-center mt-2">
-                      <input
-                        type="checkbox"
-                        id="noLimit"
-                        checked={formData.maxDebaters === ''}
-                        onChange={e => {
-                          setFormData(prev => ({ ...prev, maxDebaters: e.target.checked ? '' : 4 }));
-                        }}
-                        className="mr-2"
-                      />
-                      <label htmlFor="noLimit" className="text-sm text-gray-600">No Limit</label>
-                    </div>
-                  </div>
-                </>
-              )}
-            </motion.div>
-          );
-        }
-
-        return null;
-
-      case 4:
-        if (formData.format === 'poll') {
-          return (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-6 transition-all duration-300 ease-in-out"
-              transition={{ duration: 1.2, ease: 'easeInOut' }}
-            >
-              <div>
-                <div className="flex items-center mb-4">
-                  <input
-                    type="checkbox"
-                    name="isPrivate"
-                    checked={formData.isPrivate}
-                    onChange={handleChange}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                  />
-                  <label className="ml-2 text-sm text-gray-700">
-                    Make this room private
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 dark:text-white/80 mb-2">
+                    {formData.format === 'poll' ? 'Poll Question*' : 'Debate Topic*'}
                   </label>
+                  <input
+                    type="text"
+                    name="topic"
+                    value={formData.topic}
+                    onChange={handleChange}
+                    className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-medium"
+                    placeholder={formData.format === 'poll' ? 'e.g. Best programming language?' : 'e.g. AI vs Human Creativity'}
+                    required
+                  />
                 </div>
 
-                {formData.isPrivate && (
+                {formData.format !== 'poll' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Room Password*
+                    <label className="block text-sm font-bold text-slate-700 dark:text-white/80 mb-2">
+                      Description*
                     </label>
-                    <input
-                      type="password"
-                      name="password"
-                      value={formData.password}
+                    <textarea
+                      name="description"
+                      value={formData.description}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                      placeholder="Enter room password"
+                      rows="3"
+                      className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-medium resize-none"
+                      placeholder="Provide context for the debate..."
                       required
                     />
                   </div>
                 )}
+
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 dark:text-white/80 mb-2">
+                    Category*
+                  </label>
+                  <div className="relative">
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-medium appearance-none cursor-pointer"
+                      required
+                    >
+                      {categories.filter(c => c !== 'All').map(cat => (
+                        <option key={cat} value={cat} className="text-slate-900 bg-white">{cat}</option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
+                      <ArrowRight className="w-4 h-4 text-slate-400 rotate-90" />
+                    </div>
+                  </div>
+                </div>
+
+                {formData.format === 'poll' && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 dark:text-white/80 mb-2">
+                        Options*
+                      </label>
+                      <div className="space-y-3">
+                        {formData.pollOptions.map((option, index) => (
+                          <div key={index} className="flex gap-2">
+                            <input
+                              type="text"
+                              value={option}
+                              onChange={(e) => handlePollOptionChange(index, e.target.value)}
+                              placeholder={`Option ${index + 1}`}
+                              className="flex-1 px-5 py-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-medium"
+                              required
+                            />
+                            {index >= 2 && (
+                              <button
+                                type="button"
+                                onClick={() => removePollOption(index)}
+                                className="w-12 h-12 flex items-center justify-center bg-red-50 dark:bg-red-500/10 text-red-500 rounded-xl hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
+                              >
+                                <Minus className="w-5 h-5" />
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      {formData.pollOptions.length < 6 && (
+                        <button
+                          type="button"
+                          onClick={addPollOption}
+                          className="mt-4 flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors"
+                        >
+                          <Plus className="w-4 h-4" /> Add Another Option
+                        </button>
+                      )}
+                    </div>
+                    
+                    <button onClick={handleSubmit} disabled={loading} className="w-full mt-8 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-black font-bold rounded-xl hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white dark:hover:text-white transition-all shadow-md flex justify-center items-center">
+                      {loading ? 'Creating...' : 'Create Poll'}
+                    </button>
+                  </>
+                )}
+
+                {formData.format !== 'poll' && (
+                  <button onClick={nextStep} className="w-full mt-8 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-black font-bold rounded-xl hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white transition-all shadow-[0_8px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_8px_30px_rgba(251,121,11,0.4)] dark:hover:shadow-[0_0_30px_rgba(251,121,11,0.5)] transform hover:-translate-y-1 flex justify-center items-center gap-2">
+                    Next Step <ArrowRight className="w-5 h-5" />
+                  </button>
+                )}
               </div>
             </motion.div>
-          );
-        }
+          )}
 
-        return (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="space-y-6 transition-all duration-300 ease-in-out"
-            transition={{ duration: 1.2, ease: 'easeInOut' }}
-          >
-            <div>
-              <div className="flex items-center mb-4">
+          {currentStep === 3 && formData.format === 'fight' && (
+            <motion.div
+              key="step3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
+            >
+              <div className="text-center mb-8">
+                <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-2">Arena Type</h1>
+                <p className="text-slate-600 dark:text-white/60 font-medium">How should the debate be structured?</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, debateType: '2vs2' }))}
+                  className={`p-6 border rounded-2xl text-left transition-all duration-300 relative overflow-hidden ${
+                    formData.debateType === '2vs2'
+                      ? 'border-primary bg-primary/5 dark:bg-primary/10 shadow-[0_0_20px_rgba(251,121,11,0.2)]'
+                      : 'border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 hover:border-primary/50'
+                  }`}
+                >
+                  {formData.debateType === '2vs2' && <div className="absolute inset-0 bg-primary/5 dark:bg-primary/10 animate-pulse pointer-events-none" />}
+                  <div className="flex items-center gap-2 mb-2">
+                    <Users className={`w-5 h-5 ${formData.debateType === '2vs2' ? 'text-primary' : 'text-slate-400 dark:text-white/30'}`} />
+                    <div className={`font-bold ${formData.debateType === '2vs2' ? 'text-primary' : 'text-slate-900 dark:text-white'}`}>Team vs Team</div>
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-white/50 font-medium">Structured team debate with defined sides.</div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, debateType: 'freeForAll' }))}
+                  className={`p-6 border rounded-2xl text-left transition-all duration-300 relative overflow-hidden ${
+                    formData.debateType === 'freeForAll'
+                      ? 'border-primary bg-primary/5 dark:bg-primary/10 shadow-[0_0_20px_rgba(251,121,11,0.2)]'
+                      : 'border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 hover:border-primary/50'
+                  }`}
+                >
+                  {formData.debateType === 'freeForAll' && <div className="absolute inset-0 bg-primary/5 dark:bg-primary/10 animate-pulse pointer-events-none" />}
+                  <div className="flex items-center gap-2 mb-2">
+                    <MessageSquare className={`w-5 h-5 ${formData.debateType === 'freeForAll' ? 'text-primary' : 'text-slate-400 dark:text-white/30'}`} />
+                    <div className={`font-bold ${formData.debateType === 'freeForAll' ? 'text-primary' : 'text-slate-900 dark:text-white'}`}>Free-for-All</div>
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-white/50 font-medium">Open chaotic discussion format.</div>
+                </button>
+              </div>
+
+              {formData.debateType === '2vs2' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="space-y-4 p-6 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl">
+                    <h3 className="font-bold text-slate-900 dark:text-white">Team A</h3>
+                    <div>
+                      <input
+                        type="text"
+                        value={formData.teamA.name}
+                        onChange={(e) => handleTeamChange('teamA', 'name', e.target.value)}
+                        placeholder="Name (e.g. Pro)"
+                        className="w-full px-4 py-3 bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-medium text-slate-900 dark:text-white mb-3"
+                        required
+                      />
+                      <input
+                        type="text"
+                        value={formData.teamA.context}
+                        onChange={(e) => handleTeamChange('teamA', 'context', e.target.value)}
+                        placeholder="Context / Stance"
+                        className="w-full px-4 py-3 bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-medium text-slate-900 dark:text-white"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-4 p-6 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl">
+                    <h3 className="font-bold text-slate-900 dark:text-white">Team B</h3>
+                    <div>
+                      <input
+                        type="text"
+                        value={formData.teamB.name}
+                        onChange={(e) => handleTeamChange('teamB', 'name', e.target.value)}
+                        placeholder="Name (e.g. Con)"
+                        className="w-full px-4 py-3 bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-medium text-slate-900 dark:text-white mb-3"
+                        required
+                      />
+                      <input
+                        type="text"
+                        value={formData.teamB.context}
+                        onChange={(e) => handleTeamChange('teamB', 'context', e.target.value)}
+                        placeholder="Context / Stance"
+                        className="w-full px-4 py-3 bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-medium text-slate-900 dark:text-white"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <button onClick={nextStep} className="w-full mt-8 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-black font-bold rounded-xl hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white transition-all shadow-[0_8px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_8px_30px_rgba(251,121,11,0.4)] dark:hover:shadow-[0_0_30px_rgba(251,121,11,0.5)] transform hover:-translate-y-1 flex justify-center items-center gap-2">
+                Next Step <ArrowRight className="w-5 h-5" />
+              </button>
+            </motion.div>
+          )}
+
+          {currentStep === 4 && formData.format === 'fight' && (
+            <motion.div
+              key="step4"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
+            >
+              <div className="text-center mb-8">
+                <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-2">Final Touches</h1>
+                <p className="text-slate-600 dark:text-white/60 font-medium">Privacy and access settings.</p>
+              </div>
+
+              <div className="p-6 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <div className="relative flex items-center justify-center">
                     <input
                       type="checkbox"
                       name="isPrivate"
                       checked={formData.isPrivate}
                       onChange={handleChange}
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      className="peer sr-only"
                     />
-                    <label className="ml-2 text-sm text-gray-700">
-                      Make this room private
-                    </label>
+                    <div className="w-6 h-6 border-2 border-slate-300 dark:border-white/20 rounded-md peer-checked:bg-primary peer-checked:border-primary transition-all flex items-center justify-center">
+                      {formData.isPrivate && <Check className="w-4 h-4 text-white" />}
+                    </div>
                   </div>
+                  <div>
+                    <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Lock className="w-4 h-4 text-slate-400 dark:text-white/40" />
+                      Make Room Private
+                    </div>
+                    <div className="text-sm text-slate-500 dark:text-white/50 font-medium">Require a password to enter.</div>
+                  </div>
+                </label>
 
+                <AnimatePresence>
                   {formData.isPrivate && (
-                    <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Room Password*
-                  </label>
+                    <motion.div
+                      initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                      animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
+                      exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                      className="overflow-hidden"
+                    >
                       <input
                         type="password"
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        placeholder="Enter room password"
+                        className="w-full px-5 py-4 bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-medium"
+                        placeholder="Enter a secure password..."
                         required
                       />
-                    </div>
+                    </motion.div>
                   )}
-            </div>
-          </motion.div>
-        );
+                </AnimatePresence>
+              </div>
 
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="min-h-screen font-poppins relative overflow-x-hidden" style={{ backgroundImage: 'url("/src/pages/assets/bg.jpg")', backgroundRepeat: 'repeat', backgroundSize: 'auto' }}>
-      <header className="relative z-10 flex items-center justify-between px-8 pt-8 pb-4 bg-gradient-to-br from-[#1a223d] via-[#233D7B] to-[#2e3a5a] rounded-b-3xl md:rounded-b-[3rem] shadow-2xl">
-        <div className="flex items-center text-3xl font-bold font-grotesk cursor-pointer" onClick={() => navigate('/home')}>
-          <span className="text-[#233D7B] bg-white px-2 py-1 rounded-lg">Deb</span><span className="text-[#FB790B]">8</span>
-        </div>
-        <div className="flex items-center gap-6 ml-auto">
-          <nav className="flex items-center gap-12 font-poppins text-lg font-bold">
-            <span onClick={() => navigate('/create?type=debate')} className="cursor-pointer text-white hover:text-[#FB790B] transition flex items-center gap-2">
-              <Plus className="w-6 h-6 text-white" /> Create Room
-            </span>
-            <span onClick={() => navigate('/my-rooms')} className="cursor-pointer text-white hover:text-[#FB790B] transition flex items-center gap-2">
-              <Users className="w-6 h-6 text-white" /> My Rooms
-            </span>
-          </nav>
-          {user && (
-            <div className="flex items-center gap-2 ml-4">
-              <span onClick={() => navigate('/profile')} className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white text-2xl font-bold shadow-md border-2 border-[#FB790B] cursor-pointer">
-                {user.username[0]?.toUpperCase()}
-              </span>
-              <span onClick={() => navigate('/profile')} className="text-[#FB790B] text-xl font-bold cursor-pointer hover:underline">
-                {user.username}
-              </span>
-              <span onClick={() => { logout(); navigate('/'); }} className="cursor-pointer text-[#FB790B] hover:text-white transition flex items-center ml-2">
-                <LogOut className="w-7 h-7 text-[#FB790B]" />
-              </span>
-            </div>
+              <button onClick={handleSubmit} disabled={loading} className="w-full mt-8 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-black font-bold rounded-xl hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white transition-all shadow-[0_8px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_8px_30px_rgba(251,121,11,0.4)] dark:hover:shadow-[0_0_30px_rgba(251,121,11,0.5)] transform hover:-translate-y-1 flex justify-center items-center gap-2">
+                {loading ? 'Creating...' : 'Launch Arena'}
+              </button>
+            </motion.div>
           )}
-        </div>
-      </header>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-xl shadow-sm p-6 md:p-8">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center text-gray-600 hover:text-gray-900"
-            >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Back
-            </button>
-            <h1 className="text-2xl font-bold text-center text-gray-900">
-              Create New {formData.format === 'poll' ? 'Poll' : 'Debate'}
-            </h1>
-            <div className="w-20"></div>
-          </div>
 
-          {/* Progress Steps - Only show for debates */}
-          {formData.format === 'fight' && (
-            <div className="flex justify-between mb-8">
-              {['Format', 'Basic Info', 'Setup', 'Settings'].map((step, index) => (
-                <div
-                  key={step}
-                  className={`flex items-center ${
-                    index < 3 ? 'flex-1' : ''
-                  }`}
-                >
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      index + 1 === currentStep
-                        ? 'bg-indigo-600 text-white'
-                        : index + 1 < currentStep
-                        ? 'bg-indigo-200 text-indigo-700'
-                        : 'bg-gray-200 text-gray-600'
-                    }`}
-                  >
-                    {index + 1}
-                  </div>
-                  {index < 3 && (
-                    <div className={`flex-1 h-1 mx-4 ${
-                      index + 1 < currentStep ? 'bg-indigo-200' : 'bg-gray-200'
-                    }`} />
-                  )}
-                </div>
-              ))}
-            </div>
-            )}
-
-          {/* Form */}
-          <div className="space-y-6">
-            {renderStep()}
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-end pt-6">
-              {formData.format === 'fight' && currentStep > 2 && (
-                <button
-                  type="button"
-                  onClick={() => setCurrentStep(prev => prev - 1)}
-                  className="flex items-center px-6 py-2 text-gray-600 hover:text-gray-900"
-                >
-                  <ArrowLeft className="w-5 h-5 mr-2" />
-                  Previous
-                </button>
-              )}
-              {formData.format === 'fight' && currentStep < 4 ? (
-                <button
-                  type="button"
-                  onClick={nextStep}
-                  className="flex items-center px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 ml-auto"
-                >
-                  Next
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 ml-auto disabled:opacity-50"
-                >
-                  {loading ? 'Creating...' : `Create ${formData.format === 'poll' ? 'Poll' : 'Room'}`}
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }
 
-export default CreateRoom; 
+export default CreateRoom;

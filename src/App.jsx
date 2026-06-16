@@ -11,7 +11,7 @@ import CreateRoom from './pages/CreateRoom';
 import RoomPage from './pages/RoomPage';
 import ProfilePage from './pages/ProfilePage';
 import MyRoomsPage from './pages/MyRoomsPage';
-import CreatePoll from './pages/CreatePoll';
+
 import { Toaster } from 'react-hot-toast';
 
 import DashboardNav from './components/layout/DashboardNav';
@@ -80,14 +80,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route
-              path="/create-poll"
-              element={
-                <PrivateRoute>
-                  <CreatePoll />
-                </PrivateRoute>
-              }
-            />
+
             <Route
               path="/polls"
               element={
