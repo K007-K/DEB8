@@ -14,7 +14,6 @@ export default function HeroSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Mouse move spotlight & parallax cards
       const onMouseMove = (e) => {
         const { clientX, clientY } = e;
         const xPos = (clientX / window.innerWidth - 0.5) * 2;
@@ -27,33 +26,32 @@ export default function HeroSection() {
           ease: "power2.out"
         });
 
-        // Enhanced Parallax Floating Cards with more dynamic rotation
-        gsap.to(card1Ref.current, { x: xPos * -40, y: yPos * -50, rotationY: xPos * 15, rotationX: yPos * -15, duration: 1.5, ease: "power2.out" });
-        gsap.to(card2Ref.current, { x: xPos * 50, y: yPos * 30, rotationY: xPos * -15, rotationX: yPos * 15, duration: 1.5, ease: "power2.out" });
-        gsap.to(card3Ref.current, { x: xPos * -30, y: yPos * 60, rotationY: xPos * 10, rotationX: yPos * -10, duration: 1.5, ease: "power2.out" });
+        // Tighter, more realistic parallax for glass cards
+        gsap.to(card1Ref.current, { x: xPos * -25, y: yPos * -35, rotationY: xPos * 12, rotationX: yPos * -12, duration: 1.5, ease: "power2.out" });
+        gsap.to(card2Ref.current, { x: xPos * 30, y: yPos * 20, rotationY: xPos * -12, rotationX: yPos * 12, duration: 1.5, ease: "power2.out" });
+        gsap.to(card3Ref.current, { x: xPos * -20, y: yPos * 40, rotationY: xPos * 8, rotationX: yPos * -8, duration: 1.5, ease: "power2.out" });
       };
 
       window.addEventListener('mousemove', onMouseMove);
 
-      // Entry Animations
       gsap.fromTo([title1Ref.current, title2Ref.current],
-        { y: 120, opacity: 0, rotateX: -30 },
+        { y: 100, opacity: 0, rotateX: -20 },
         { y: 0, opacity: 1, rotateX: 0, duration: 1.8, stagger: 0.2, ease: "expo.out", delay: 0.2 }
       );
 
       gsap.fromTo([card1Ref.current, card2Ref.current, card3Ref.current],
-        { scale: 0.7, opacity: 0, y: 80, rotateZ: -10 },
-        { scale: 1, opacity: 1, y: 0, rotateZ: 0, duration: 1.5, stagger: 0.15, ease: "back.out(1.5)", delay: 0.8 }
+        { scale: 0.8, opacity: 0, y: 60, rotateZ: -5 },
+        { scale: 1, opacity: 1, y: 0, rotateZ: 0, duration: 1.5, stagger: 0.15, ease: "back.out(1.2)", delay: 0.8 }
       );
 
-      // Continuous subtle breathing animation for cards
+      // Slower, more elegant breathing animation
       gsap.to([card1Ref.current, card2Ref.current, card3Ref.current], {
-        y: "+=15",
-        duration: 2.5,
+        y: "+=12",
+        duration: 3,
         yoyo: true,
         repeat: -1,
         ease: "sine.inOut",
-        stagger: 0.2,
+        stagger: 0.4,
         delay: 2.5
       });
 
@@ -63,96 +61,107 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <div ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#050505]" style={{ perspective: '1200px' }}>
+    <div ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#020202]" style={{ perspective: '1200px' }}>
       
-      {/* Dynamic Animated Grid - Pure Black/Orange vibe */}
-      <div className="absolute inset-0 z-0 opacity-[0.2]">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(251,121,11,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(251,121,11,0.15)_1px,transparent_1px)] bg-[size:60px_60px] animate-[grid_15s_linear_infinite]" style={{ transformOrigin: 'top center', transform: 'rotateX(60deg) scale(3)' }} />
+      {/* Refined Grid: Thinner lines, less muddy */}
+      <div className="absolute inset-0 z-0 opacity-[0.15]">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(251,121,11,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(251,121,11,0.2)_1px,transparent_1px)] bg-[size:80px_80px] animate-[grid_20s_linear_infinite]" style={{ transformOrigin: 'top center', transform: 'rotateX(60deg) scale(3)' }} />
       </div>
 
-      {/* Mouse Spotlight - Orange */}
+      {/* Mouse Spotlight: Tighter and more intense in the center */}
       <div ref={spotlightRef} className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
-        <div className="w-[800px] h-[800px] bg-primary/20 rounded-full blur-[160px] mix-blend-screen" />
+        <div className="w-[600px] h-[600px] bg-primary/15 rounded-full blur-[120px] mix-blend-screen" />
       </div>
 
-      {/* Floating Cards (Parallax Elements) - Enhanced styling */}
+      {/* Realistic Premium Glass Cards */}
       <div className="absolute inset-0 z-10 pointer-events-none">
+        
         {/* Card 1: Live Poll */}
-        <div ref={card1Ref} className="absolute top-[20%] left-[8%] md:left-[12%] w-52 h-60 bg-surface/30 backdrop-blur-2xl border border-primary/20 rounded-2xl p-5 shadow-[0_0_50px_rgba(251,121,11,0.15)] flex flex-col justify-between hidden md:flex">
-          <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-lg shadow-[0_0_15px_rgba(251,121,11,0.4)]">📊</div>
-          <div>
-            <div className="h-2 w-full bg-white/5 rounded-full mb-3 overflow-hidden shadow-inner">
-              <div className="h-full bg-gradient-to-r from-primary to-secondary rounded-full w-[70%] shadow-[0_0_10px_rgba(251,121,11,0.8)]" />
+        <div ref={card1Ref} className="absolute top-[20%] left-[8%] md:left-[12%] w-52 h-60 bg-gradient-to-br from-white/[0.08] to-transparent backdrop-blur-md border border-white/[0.08] rounded-2xl p-5 shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15),0_0_40px_rgba(251,121,11,0.1)] flex flex-col justify-between hidden md:flex overflow-hidden group">
+          {/* Subtle Glare */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.04] to-transparent opacity-50 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+          
+          <div className="w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-lg shadow-inner backdrop-blur-sm">📊</div>
+          <div className="relative z-10">
+            <div className="h-2 w-full bg-black/50 rounded-full mb-3 overflow-hidden shadow-[inset_0_1px_2px_rgba(0,0,0,0.8)]">
+              <div className="h-full bg-gradient-to-r from-[#FF9900] to-primary rounded-full w-[70%] shadow-[0_0_10px_rgba(251,121,11,0.8)]" />
             </div>
-            <p className="text-xs text-primary font-bold uppercase tracking-wider mb-1">Trending Poll</p>
-            <p className="text-white text-base font-bold">AI vs Human?</p>
+            <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest mb-1">Trending Poll</p>
+            <p className="text-white text-base font-medium tracking-tight">AI vs Human?</p>
           </div>
         </div>
 
         {/* Card 2: Debate Match */}
-        <div ref={card2Ref} className="absolute top-[60%] right-[8%] md:right-[12%] w-64 h-36 bg-surface/30 backdrop-blur-2xl border border-primary/20 rounded-2xl p-5 shadow-[0_0_50px_rgba(251,121,11,0.15)] flex items-center gap-5 hidden md:flex">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#050505] to-primary/40 flex items-center justify-center border border-primary/50 text-white font-black text-sm shadow-[0_0_20px_rgba(251,121,11,0.5)]">VS</div>
-          <div>
-            <p className="text-white text-base font-bold mb-1">Live 2v2 Debate</p>
+        <div ref={card2Ref} className="absolute top-[60%] right-[8%] md:right-[12%] w-64 h-32 bg-gradient-to-br from-white/[0.08] to-transparent backdrop-blur-md border border-white/[0.08] rounded-2xl p-5 shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15),0_0_40px_rgba(251,121,11,0.1)] flex items-center gap-5 hidden md:flex overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.04] to-transparent opacity-50 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+          
+          <div className="w-12 h-12 rounded-full bg-black/50 flex items-center justify-center border border-primary/30 text-primary font-black text-xs shadow-[inset_0_0_15px_rgba(251,121,11,0.2)]">VS</div>
+          <div className="relative z-10">
+            <p className="text-white text-base font-medium tracking-tight mb-1">Live 2v2 Debate</p>
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_5px_rgba(251,121,11,1)]" />
-              <p className="text-xs text-text-secondary">4,230 watching</p>
+              <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(251,121,11,1)]" />
+              <p className="text-xs text-white/50 font-medium">4,230 watching</p>
             </div>
           </div>
         </div>
 
         {/* Card 3: Speaker */}
-        <div ref={card3Ref} className="absolute top-[15%] right-[22%] md:right-[18%] w-44 h-44 bg-surface/30 backdrop-blur-2xl border border-primary/20 rounded-2xl p-5 shadow-[0_0_40px_rgba(251,121,11,0.2)] flex flex-col items-center justify-center hidden lg:flex">
-          <div className="relative">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-primary to-secondary mb-3 animate-pulse shadow-[0_0_25px_rgba(251,121,11,0.6)] relative z-10" />
-            <div className="absolute inset-0 bg-primary/30 rounded-full blur-md animate-ping" />
+        <div ref={card3Ref} className="absolute top-[15%] right-[22%] md:right-[18%] w-40 h-40 bg-gradient-to-br from-white/[0.08] to-transparent backdrop-blur-md border border-white/[0.08] rounded-2xl p-5 shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15),0_0_30px_rgba(251,121,11,0.05)] flex flex-col items-center justify-center hidden lg:flex overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.04] to-transparent opacity-50 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+          
+          <div className="relative z-10 flex flex-col items-center">
+            <div className="relative w-14 h-14 mb-3">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary to-[#FF9900] shadow-[0_0_20px_rgba(251,121,11,0.4)]" />
+              <div className="absolute inset-0 rounded-full bg-primary/40 blur-md animate-ping" />
+            </div>
+            <p className="text-white text-sm font-medium tracking-tight">Alex Chen</p>
+            <p className="text-[10px] text-primary font-bold tracking-widest uppercase mt-1">Speaking</p>
           </div>
-          <p className="text-white text-base font-bold">Alex Chen</p>
-          <p className="text-xs text-primary font-bold tracking-widest uppercase mt-1">Speaking</p>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="relative z-20 max-w-7xl mx-auto px-6 text-center pt-20">
-        <h1 className="text-[12vw] md:text-[8.5rem] leading-[0.85] font-black tracking-tighter mb-8 uppercase flex flex-col items-center select-none">
-          <span ref={title1Ref} className="text-white drop-shadow-[0_0_40px_rgba(255,255,255,0.1)] block" style={{ transformStyle: 'preserve-3d' }}>Master The</span>
-          <span ref={title2Ref} className="block mt-2" style={{ transformStyle: 'preserve-3d' }}>
+        <h1 className="text-[12vw] md:text-[9rem] leading-[0.8] font-black tracking-tighter mb-8 uppercase flex flex-col items-center select-none">
+          <span ref={title1Ref} className="text-white block" style={{ transformStyle: 'preserve-3d' }}>Master The</span>
+          <span ref={title2Ref} className="block mt-1" style={{ transformStyle: 'preserve-3d' }}>
             <span className="text-transparent" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.9)' }}>Real-</span>
-            <span className="bg-gradient-to-r from-primary via-[#FFCC00] to-primary bg-clip-text text-transparent animate-gradient drop-shadow-[0_0_30px_rgba(251,121,11,0.6)]">Time</span>
+            {/* Sharper gradient text without muddy drop shadow */}
+            <span className="bg-gradient-to-r from-white via-primary to-[#FF9900] bg-clip-text text-transparent">Time</span>
           </span>
         </h1>
         
-        <p className="text-lg md:text-2xl text-text-secondary max-w-2xl mx-auto mb-14 font-light tracking-wide drop-shadow-md">
+        <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-14 font-normal tracking-wide">
           Elevate your discourse. Join the top 1% of thinkers in highly structured, real-time debates and dynamic polling arenas.
         </p>
         
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-          {/* Enhanced Conic Gradient Glowing Button - Strictly Orange/Black */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+          {/* Ultra-crisp Conic Button */}
           <button 
             onClick={() => navigate('/auth?mode=register')}
-            className="relative inline-flex h-16 w-full sm:w-64 overflow-hidden rounded-full p-[2px] focus:outline-none group transform hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(251,121,11,0.3)] hover:shadow-[0_0_80px_rgba(251,121,11,0.6)]"
+            className="relative inline-flex h-16 w-full sm:w-64 overflow-hidden rounded-full p-[1px] focus:outline-none group transform hover:scale-105 transition-transform duration-300 shadow-[0_0_30px_rgba(251,121,11,0.2)] hover:shadow-[0_0_50px_rgba(251,121,11,0.4)]"
             data-cursor="interactive"
           >
-            <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#050505_0%,#FB790B_50%,#050505_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-[#0a0a0a] px-8 py-2 text-lg font-bold text-white backdrop-blur-3xl transition-colors group-hover:bg-[#000000]">
+            <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#000_0%,#FB790B_50%,#000_100%)]" />
+            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-black/90 backdrop-blur-xl px-8 py-2 text-lg font-semibold text-white transition-colors group-hover:bg-black/70 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
               Enter The Arena
             </span>
           </button>
           
           <button 
             onClick={() => navigate('/debates')}
-            className="group px-8 py-4 rounded-full bg-surface/30 border border-primary/30 text-white font-bold text-lg hover:border-primary hover:bg-primary/10 transition-all duration-300 flex items-center justify-center gap-3 w-full sm:w-auto shadow-[0_0_20px_rgba(251,121,11,0.1)]"
+            className="group px-8 py-4 rounded-full bg-white/[0.03] backdrop-blur-md border border-white/10 text-white font-medium text-lg hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 flex items-center justify-center gap-3 w-full sm:w-auto shadow-[0_10px_20px_rgba(0,0,0,0.4)]"
             data-cursor="interactive"
           >
             Watch Live
-            <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse shadow-[0_0_15px_rgba(251,121,11,1)]" />
+            <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(251,121,11,0.8)]" />
           </button>
         </div>
       </div>
 
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes grid {
-          0% { transform: rotateX(60deg) translateY(-60px) scale(3); }
+          0% { transform: rotateX(60deg) translateY(-80px) scale(3); }
           100% { transform: rotateX(60deg) translateY(0px) scale(3); }
         }
       `}} />
