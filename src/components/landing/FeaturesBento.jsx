@@ -26,16 +26,6 @@ export default function FeaturesBento() {
             }
           }
         );
-        
-        // Add subtle continuous floating to cards
-        gsap.to(card, {
-          y: "+=8",
-          duration: 3 + Math.random(),
-          yoyo: true,
-          repeat: -1,
-          ease: "sine.inOut",
-          delay: Math.random() * 2
-        });
       });
     }, containerRef);
     
