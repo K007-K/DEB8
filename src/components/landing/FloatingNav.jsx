@@ -60,6 +60,6 @@ export default function FloatingNav() {
           </div>
         </div>
       </div>
-    </motion.nav>
+    </nav>
   );
 }
