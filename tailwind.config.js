@@ -16,7 +16,7 @@ export default {
         surface: '#111111',
         'surface-light': '#1A1A1A',
         primary: '#FB790B',
-        secondary: '#0066FF',
+        secondary: '#FF9900',
         text: {
           primary: '#FFFFFF',
           secondary: '#A1A1AA',
