@@ -3,6 +3,7 @@ import SmoothScroller from '../components/layout/SmoothScroller';
 import FloatingNav from '../components/landing/FloatingNav';
 import HeroSection from '../components/landing/HeroSection';
 import FeaturesBento from '../components/landing/FeaturesBento';
+import DebateShowcase from '../components/landing/DebateShowcase';
 import CustomCursor from '../components/layout/CustomCursor';
 
 function LandingPage() {
@@ -14,7 +15,8 @@ function LandingPage() {
         <main>
           <HeroSection />
           <FeaturesBento />
-          {/* We will add Showcase, and Tech Marquee here later */}
+          <DebateShowcase />
+          {/* We will add Tech Marquee here later */}
         </main>
       </div>
     </SmoothScroller>
