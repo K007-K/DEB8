@@ -88,7 +88,7 @@ export default function BrowseDebates() {
         <div className="bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] flex flex-col lg:flex-row gap-4 transition-colors duration-500">
           
           {/* Search Input */}
-          <div className="relative flex-1">
+          <div className="relative flex-1 lg:max-w-xs">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-slate-400 dark:text-white/30" />
             </div>
@@ -102,7 +102,7 @@ export default function BrowseDebates() {
           </div>
 
           {/* Categories Scrollable Row */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 hide-scrollbar flex-shrink-0">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 hide-scrollbar flex-1 min-w-0">
             <div className="flex items-center gap-2 px-1">
               <Filter className="w-5 h-5 text-slate-400 dark:text-white/30 mr-2 flex-shrink-0" />
               {categories.map(cat => (
