@@ -781,8 +781,8 @@ function RoomPage() {
     // Step 1: Password prompt for private rooms
     if (room.isPrivate && joinStep === 1) {
       return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 max-w-md w-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8)] font-sans">
+        <div className="fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-white/90 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 max-w-md w-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8)] font-sans">
             <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-6">Enter Password</h2>
             <div className="space-y-4">
               <input
@@ -812,8 +812,8 @@ function RoomPage() {
     // Step 2: Show join options
     if (room.debateType === 'freeForAll') {
       return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 max-w-md w-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8)] font-sans text-center">
+        <div className="fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-white/90 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 max-w-md w-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8)] font-sans text-center">
             <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Join Arena</h2>
             <p className="text-slate-500 dark:text-white/60 font-medium mb-8">Enter this free-for-all debate and share your thoughts.</p>
             <button
@@ -829,8 +829,8 @@ function RoomPage() {
 
     // For 2vs2, show full join options
     return (
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div className="bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 max-w-md w-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8)] font-sans">
+      <div className="fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div className="bg-white/90 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/60 dark:border-white/[0.08] rounded-[2rem] p-8 max-w-md w-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.8)] font-sans">
           <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6 text-center">Join Arena</h2>
           <div className="space-y-4">
             <button
